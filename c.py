@@ -41,19 +41,20 @@ class ClientGame:
         "Run the main game loop"
         running = True
         clock = self._pygame.time.Clock()
-        while running:
-            for event in self._pygame.event.get():
-                if event.type == self._pygame.QUIT:
-                    running = False
+        try: 
+            while running:
+                for event in self._pygame.event.get():
+                    if event.type == self._pygame.QUIT:
+                        running = False
 
-            self._handlekey()
-            self._screen.set_camera(self._fetch_camera())
-            self._screen.draw(self._game_state)
-            clock.tick(ClientGame.FPS)
-
-        self._client.send_data({"type": "c_disconnect"})
-        self._pygame.quit()
-        self._client.disconnect()
+                self._handlekey()
+                self._screen.set_camera(self._fetch_camera())
+                self._screen.draw(self._game_state)
+                clock.tick(ClientGame.FPS)
+        finally: 
+            self._client.send_data({"type": "c_disconnect"})
+            self._pygame.quit()
+            self._client.disconnect()
 
     def _handlekey(self):
         "Handle keyboard input"

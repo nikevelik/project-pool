@@ -5,7 +5,7 @@ import pickle
 
 class NetworkEntity:
     "Manage an abstract node in a socket-based network"
-    BUFFER_SIZE = 4096
+    BUFFER_SIZE = 4096*1024
     def __init__(self, socket, host, port):
         self.server_adress = (host, port)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

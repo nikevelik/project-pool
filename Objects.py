@@ -1,4 +1,5 @@
 "Basic helper object structures"
+import random
 
 class Circle:
     "Store a quadruple of x, y, radius, color as a basic structure"
@@ -25,6 +26,16 @@ class Circle:
         "create instance from dictionary"
         return cls(x=data["x"], y=data["y"], r=data["r"], color=tuple(data["color"]))
 
+    @staticmethod
+    def is_circle_inside_circle(a, b):
+        "check if circle1 is inside circle2"
+        if a.r > b.r:
+            return False
+        dx = (a.x - b.x) ** 2
+        dy = (a.y - b.y) ** 2
+        return dx + dy <= (b.r - a.r) ** 2
+
+
 class Player:
     "Manage a game player"
     def __init__(self, circle, name, score, i_d):
@@ -50,6 +61,17 @@ class Player:
         "move player"
         self._circle.x += delta.x * speed
         self._circle.y += delta.y * speed
+
+    def feed(self, radius_increase, score_increase):
+        "feed player"
+        self.score += score_increase
+        self._circle.r += radius_increase
+
+    def get_ranking(self):
+        return {
+            "name": self.name,
+            "score": self.score
+        }
 
     def to_dict(self):
         "convert to dictionary"
@@ -132,6 +154,11 @@ class GameState:
             "players": {key: value.to_dict() for key, value in self.players.items()}
         }
 
+    def get_ranking(self):
+        "Get sorted ranking of all players by score"
+        rankings = [player.get_ranking() for player in self.players.values()]
+        return sorted(rankings, key=lambda x: x["score"], reverse=True)
+
     def add_player(self, player):
         "add a player to the game"
         self.players[player.id] = player
@@ -139,6 +166,37 @@ class GameState:
     def remove_player(self, player_id):
         "remove a player from the game"
         self.players.pop(player_id)
+
+    def remove_food(self, food_id):
+        "remove a food item from the game"
+        self.food.pop(food_id)
+
+    def fill(self, x1, y1, x2, y2, n, radius=5):
+        "Fill a rectangular field with random food objects"
+        for _ in range(n):
+            x = random.uniform(x1, x2)
+            y = random.uniform(y1, y2)
+            self.food.append(Food(x, y, radius, (random.randint(50, 200), random.randint(50, 200), random.randint(50, 200))))
+
+    def move_player(self, player_id, delta, spped):
+        "move a player"
+        self.players[player_id].move(delta, spped)
+
+    def feed_player(self, player_id, radius_increase, score_increase):
+        "feed a player"
+        self.players[player_id].feed(radius_increase, score_increase)
+
+
+    def get_overlapping_food_for_player(self, player_id):
+        "get food item that overlaps with a player"
+        player = self.players[player_id]
+        res = []
+        for i, food_item in enumerate(self.food):
+            if Circle.is_circle_inside_circle(food_item, player._circle):
+                res.append(i)
+        
+        return res
+        
 
     @classmethod
     def default(cls):
