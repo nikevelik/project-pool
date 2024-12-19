@@ -1,10 +1,10 @@
-"Module for wrappers for socket-based network nodes"
+"""Module for wrappers for socket-based network nodes"""
 import threading
 import pickle
 
 
 class NetworkEntity:
-    "Manage an abstract node in a socket-based network"
+    """Manage an abstract node in a socket-based network"""
     BUFFER_SIZE = 4096*1024
     def __init__(self, socket, host, port):
         self.server_address = (host, port)
@@ -13,11 +13,11 @@ class NetworkEntity:
         self._on_receive = lambda x, y=None: None
 
     def on_receive(self, function):
-        "set callback for incoming data"
+        """set callback for incoming data"""
         self._on_receive = function
 
     def listen_loop(self):
-        "listen indefinetely for incoming data"
+        """listen indefinetely for incoming data"""
 
     def listen(self):
         "wrap listen_loop in a thread"
@@ -27,31 +27,30 @@ class NetworkEntity:
         return thread
 
 class Client(NetworkEntity):
-    "Manage Network Entity with common operations in the network"
-
+    """Manage Network Entity with common operations in the network"""
     def __init__(self, socket, host, port):
         super().__init__(socket, host, port)
         self.socket.bind(('', 0))
 
     def listen_loop(self):
-        "listen indefinetely for incoming data"
+        """listen indefinetely for incoming data"""
         while True:
             data = self.socket.recvfrom(NetworkEntity.BUFFER_SIZE)[0]
             data = pickle.loads(data)
             self._on_receive(data)
 
     def send_data(self, data):
-        "send data to server"
+        """send data to server"""
         serialized_data = pickle.dumps(data)
         self.socket.sendto(serialized_data, self.server_address)
 
     def disconnect(self):
-        "inform server that the client is disconnecting"
+        """inform server that the client is disconnecting"""
         self.send_data({'disconnect': True})
         self.socket.close()
 
 class Server(NetworkEntity):
-    "Manage Network Entity with speicial privileges in the network"
+    """Manage Network Entity with speicial privileges in the network"""
 
     def __init__(self, socket, host, port):
         super().__init__(socket, host, port)
@@ -60,7 +59,7 @@ class Server(NetworkEntity):
         self.addresses = set()
 
     def listen_loop(self):
-        "listen indefinetely for incoming messages"
+        """listen indefinetely for incoming messages"""
         while True:
             data, address = self.socket.recvfrom(NetworkEntity.BUFFER_SIZE)
             data = pickle.loads(data)
@@ -70,16 +69,16 @@ class Server(NetworkEntity):
                 self.addresses.remove(address)
 
     def broadcast_data(self, data):
-        "send data to all clients"
+        """send data to all clients"""
         message = pickle.dumps(data)
         for address in self.addresses:
             self.socket.sendto(message, address)
 
     def broadcast_to(self, address, data):
-        "send data to a specific address"
+        """send data to a specific address"""
         message = pickle.dumps(data)
         self.socket.sendto(message, address)
 
     def close(self):
-        "Close the server"
+        """Close the server"""
         self.socket.close()

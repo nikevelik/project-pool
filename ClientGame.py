@@ -1,11 +1,11 @@
-"Module for managing client-side game logic and networking in the agar.io game implementation"
+"""Module for managing client-side game logic and networking in the agar.io game implementation"""
 from Objects import Vector, Camera
 from GameState import GameState
 from Screen import Screen
 from Network import Client
 
 class ClientGame:
-    "Manage the communication between the game state, input, output and client's networking logic"
+    """Manage the communication between the game state, input, output and client's networking logic"""
     FPS = 30
     def __init__(self, pygame_library, socket_library):
         self._id = None
@@ -15,7 +15,7 @@ class ClientGame:
         self._screen = None
 
     def start(self):
-        "start the game"
+        """start the game"""
         self._client.on_receive(self._process_request)
         self._client.listen()
         self._client.send_data({'type': 'c_connect'})
@@ -24,7 +24,7 @@ class ClientGame:
         self._main_loop()
 
     def _process_request(self, data):
-        "handle callback from client's listen() method"
+        """handle callback from client's listen() method"""
         if not data.get("type"):
             return
         match data["type"]:
@@ -37,7 +37,7 @@ class ClientGame:
 
 
     def _main_loop(self):
-        "Run the main game loop"
+        """Run the main game loop"""
         running = True
         clock = self._pygame.time.Clock()
         try: 
@@ -56,7 +56,7 @@ class ClientGame:
             self._client.disconnect()
 
     def _handlekey(self):
-        "Handle keyboard input"
+        """Handle keyboard input"""
         delta = Vector(0, 0)
         keys = self._pygame.key.get_pressed()
         if keys[self._pygame.K_UP] or keys[self._pygame.K_w]:
@@ -73,6 +73,6 @@ class ClientGame:
             self._client.send_data({"type": "c_movement", "delta": delta.to_dict()})
 
     def _fetch_camera(self):
-        "calculate camera position for drawing"
+        """calculate camera position for drawing"""
         player = self._game_state.players.get(self._id)
         return Camera(player.getx(), player.gety()) if player else Camera(0, 0)

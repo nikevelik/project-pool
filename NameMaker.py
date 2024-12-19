@@ -1,6 +1,9 @@
+""""""
 import random
 
 class NameMaker:
+    """class for generating a name"""
+    UPPER_LIMIT = 5
     expressions = [
         "Ouch", "Wow", "Yikes", "Oops", "Ugh", "Aha", "Yay", "Eek", "Eh", "Phew", 
         "Hooray", "Huh", "Hmm", "Whoa", "Gah", "Oof", "Yuck", "Nope", "Aww", "Pfft", 
@@ -11,5 +14,5 @@ class NameMaker:
     
     @staticmethod
     def new():
-        num_expressions = random.randint(1, 5)
+        num_expressions = random.randint(1, NameMaker.UPPER_LIMIT)
         return ''.join(random.choices(NameMaker.expressions, k=num_expressions))
