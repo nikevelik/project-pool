@@ -52,6 +52,9 @@ class Player:
         "get y position"
         return self._circle.y
 
+    def getr(self):
+        return self._circle.r
+
     def draw_on_screen(self, screen):
         "define behavior for drawing on screen"
         self._circle.draw_on_screen(screen)
@@ -81,6 +84,10 @@ class Player:
             "id": self.id,
             "score": self.score,
         }
+
+    def respawn(self, circle):
+        "respawn player"
+        self._circle = circle
 
     @classmethod
     def from_dict(cls, data):
@@ -171,6 +178,11 @@ class GameState:
         "remove a food item from the game"
         self.food.pop(food_id)
 
+    def respawn_player(self, player_id, circle):
+        "respawn a player"
+        player = self.players[player_id]
+        player.respawn(circle)
+
     def fill(self, x1, y1, x2, y2, n, radius=5):
         "Fill a rectangular field with random food objects"
         for _ in range(n):
@@ -185,6 +197,19 @@ class GameState:
     def feed_player(self, player_id, radius_increase, score_increase):
         "feed a player"
         self.players[player_id].feed(radius_increase, score_increase)
+    
+    def get_collision_for_player(self, player_id):
+        "get collisions for a player"
+        player = self.players[player_id]
+        for i, enemy in self.players.items():
+            if i == player_id:
+                continue
+            if Circle.is_circle_inside_circle(enemy._circle, player._circle):
+                return ("conquer", enemy)
+            if Circle.is_circle_inside_circle(player._circle, enemy._circle):
+                return ("defeat", enemy)
+
+        return ("idle", None)
 
 
     def get_overlapping_food_for_player(self, player_id):

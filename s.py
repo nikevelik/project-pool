@@ -67,6 +67,15 @@ class ServerGame:
     
     def check_for_collision(self, player_id):
         "check if player collided with another player"
+        status, enemy = self.game_state.get_collision_for_player(player_id)
+        if status == "conquer":
+            reward = enemy.getr()
+            self.game_state.respawn_player(enemy.id, Circle(50, 50, 15, (0, 0, 255)))
+            self.game_state.feed_player(player_id, reward, reward)
+        elif status == "defeat":
+            reward = self.game_state.players[player_id].getr()
+            self.game_state.respawn_player(player_id, Circle(50, 50, 15, (0, 0, 255)))
+            self.game_state.feed_player(enemy.id, reward, reward)
 
 
     def check_for_feeding(self, player_id):
