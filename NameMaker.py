@@ -11,7 +11,7 @@ class NameMaker:
         "Hmph", "Eww", "Whee", "Gee", "Neh", "Woot", "Grr", "Oi", "Hoor", "Hype", 
         "Nah", "D'oh", "Rarr", "Hah", "Poo", "Brr", "Zzz", "Ahem", "Ehh", "Vroom"
     ]
-    
+
     @staticmethod
     def new():
         num_expressions = random.randint(1, NameMaker.UPPER_LIMIT)

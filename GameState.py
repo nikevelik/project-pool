@@ -1,3 +1,4 @@
+"Module for Complex Data Structure for storing what determines a game"
 import random
 from Objects import Circle, Player, Food
 
@@ -42,7 +43,10 @@ class GameState:
         for _ in range(n):
             x = random.uniform(x1, x2)
             y = random.uniform(y1, y2)
-            self.food.append(Food(x, y, radius, (random.randint(50, 200), random.randint(50, 200), random.randint(50, 200))))
+            r = random.randint(50, 200)
+            g = random.randint(50, 200)
+            b = random.randint(50, 200)
+            self.food.append(Food(x, y, radius, (r, g, b)))
 
     def move_player(self, player_id, delta, spped):
         """move a player"""
@@ -51,7 +55,7 @@ class GameState:
     def feed_player(self, player_id, radius_increase, score_increase):
         """feed a player"""
         self.players[player_id].feed(radius_increase, score_increase)
-    
+
     def get_collision_for_player(self, player_id):
         """get collisions for a player"""
         player = self.players[player_id]
@@ -65,7 +69,6 @@ class GameState:
 
         return ("idle", None)
 
-
     def get_overlapping_food_for_player(self, player_id):
         """get food item that overlaps with a player"""
         player = self.players[player_id]
@@ -73,9 +76,7 @@ class GameState:
         for i, food_item in enumerate(self.food):
             if Circle.is_circle_inside_circle(food_item, player.get_circle()):
                 res.append(i)
-        
         return res
-        
 
     @classmethod
     def default(cls):

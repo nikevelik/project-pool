@@ -36,9 +36,8 @@ class Screen:
         """draw the game state from camera's perspective"""
         self._map.fill(Screen.BACKGROUND_COLOR)
         self.draw_grid()
-
-        self.draw_list(0, 0, list(dat["name"] + ": " + str(dat["score"]) for dat in game_state.get_ranking()))
-        
+        self.draw_list(0, 0, [dat["name"] + ": " + str(dat["score"])
+                            for dat in game_state.get_ranking()])
         for player in game_state.players.values():
             player.draw_on_screen(self)
         for food_item in game_state.food:
@@ -57,7 +56,10 @@ class Screen:
         if use_camera_offset:
             relative_x = self._offset_x(x)
             relative_y = self._offset_y(y)
-            if relative_x > 0 and relative_y > 0 and relative_x < self._width and relative_y < self._height:
+            if (relative_x > 0 and 
+                relative_y > 0 and 
+                relative_x < self._width and 
+                relative_y < self._height):
                 self._map.blit(self._font.render(text, True, Screen.FONT_COLOR), (relative_x, relative_y))
         else:
             self._map.blit(self._font.render(text, True, Screen.FONT_COLOR), (x, y))
@@ -66,7 +68,10 @@ class Screen:
         """draw circle object on screen"""
         relative_x = self._offset_x(circle.x)
         relative_y = self._offset_y(circle.y)
-        if relative_x + circle.r > 0 and relative_y + circle.r > 0 and relative_x - circle.r < self._width and relative_y - circle.r < self._height:
+        if (relative_x + circle.r > 0 and
+            relative_y + circle.r > 0 and 
+            relative_x - circle.r < self._width and
+            relative_y - circle.r < self._height):
             self._pygame.draw.circle(self._map, circle.color, (relative_x, relative_y), circle.r)
 
     def draw_grid(self):

@@ -43,7 +43,7 @@ class ServerGame:
 
     def handle_movement(self, address, delta):
         """process request of client movement"""
-        delta = Vector.binarize(delta) 
+        delta = Vector.binarize(delta)
         player = self.client_player_mapping[address]
         self.game_state.move_player(player, delta, 10)
         self.check_for_collision(player)
@@ -64,7 +64,7 @@ class ServerGame:
             "id": uid,
             "game_state": self.game_state.to_dict()
         }
-    
+
     def check_for_collision(self, player_id):
         """check if player collided with another player"""
         status, enemy = self.game_state.get_collision_for_player(player_id)

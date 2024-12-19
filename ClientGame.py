@@ -5,7 +5,7 @@ from Screen import Screen
 from Network import Client
 
 class ClientGame:
-    """Manage the communication between the game state, input, output and client's networking logic"""
+    """Manage the communication between the game state, input, output and client"""
     FPS = 30
     def __init__(self, pygame_library, socket_library):
         self._id = None
