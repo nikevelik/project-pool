@@ -15,47 +15,47 @@ class ServerGame:
         self.server.on_receive(self.process_request)
         self.server.listen_loop()
 
-    def process_request(self, data, adress):
+    def process_request(self, data, address):
         "handle callback from servers listen() method"
         self.server.broadcast_data(data)
         if not data.get("type"):
             return
         match data["type"]:
             case "c_connect":
-                self.handle_new_connection(adress)
+                self.handle_new_connection(address)
             case "c_movement":
-                self.handle_movement(adress, Vector.from_dict(data["delta"]))
+                self.handle_movement(address, Vector.from_dict(data["delta"]))
             case "c_disconnect":
-                self.handle_disconnection(adress)
+                self.handle_disconnection(address)
 
     def broadcast_update(self):
         "send to all clients the latest game state"
         self.server.broadcast_data({"type": "s_update", "game_state": self.game_state.to_dict()})
 
-    def handle_new_connection(self, adress):
+    def handle_new_connection(self, address):
         "process request of new client joining the game"
         i_d = self.ids.newid()
         self.ids.add(i_d)
-        self.client_player_mapping[adress] = i_d
+        self.client_player_mapping[address] = i_d
         self.game_state.add_player(self._generate_new_player(i_d))
-        self.server.broadcast_to(adress, self._make_welcome_data(i_d))
+        self.server.broadcast_to(address, self._make_welcome_data(i_d))
         self.broadcast_update()
 
-    def handle_movement(self, adress, delta):
+    def handle_movement(self, address, delta):
         "process request of client movement"
         delta = Vector.binarize(delta) 
-        player = self.client_player_mapping[adress]
+        player = self.client_player_mapping[address]
         self.game_state.move_player(player, delta, 10)
         self.check_for_collision(player)
         self.check_for_feeding(player)
         self.broadcast_update()
 
-    def handle_disconnection(self, adress):
+    def handle_disconnection(self, address):
         "process statement of client disconnecting"
-        self.ids.discard(self.client_player_mapping[adress])
-        self.game_state.remove_player(self.client_player_mapping[adress])
+        self.ids.discard(self.client_player_mapping[address])
+        self.game_state.remove_player(self.client_player_mapping[address])
         self.broadcast_update()
-        self.client_player_mapping.pop(adress)
+        self.client_player_mapping.pop(address)
 
     def _make_welcome_data(self, i_d):
         "make data to send to new client"

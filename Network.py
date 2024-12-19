@@ -7,7 +7,7 @@ class NetworkEntity:
     "Manage an abstract node in a socket-based network"
     BUFFER_SIZE = 4096*1024
     def __init__(self, socket, host, port):
-        self.server_adress = (host, port)
+        self.server_address = (host, port)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self._on_receive = lambda x, y=None: None
@@ -43,7 +43,7 @@ class Client(NetworkEntity):
     def send_data(self, data):
         "send data to server"
         serialized_data = pickle.dumps(data)
-        self.socket.sendto(serialized_data, self.server_adress)
+        self.socket.sendto(serialized_data, self.server_address)
 
     def disconnect(self):
         "inform server that the client is disconnecting"
@@ -57,28 +57,28 @@ class Server(NetworkEntity):
         super().__init__(socket, host, port)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(('', port))
-        self.adresses = set()
+        self.addresses = set()
 
     def listen_loop(self):
         "listen indefinetely for incoming messages"
         while True:
-            data, adress = self.socket.recvfrom(NetworkEntity.BUFFER_SIZE)
+            data, address = self.socket.recvfrom(NetworkEntity.BUFFER_SIZE)
             data = pickle.loads(data)
-            self.adresses.add(adress)
-            self._on_receive(data, adress)
+            self.addresses.add(address)
+            self._on_receive(data, address)
             if isinstance(data, dict) and data.get('disconnect'):
-                self.adresses.remove(adress)
+                self.addresses.remove(address)
 
     def broadcast_data(self, data):
         "send data to all clients"
         message = pickle.dumps(data)
-        for adress in self.adresses:
-            self.socket.sendto(message, adress)
+        for address in self.addresses:
+            self.socket.sendto(message, address)
 
-    def broadcast_to(self, adress, data):
-        "send data to a specific adress"
+    def broadcast_to(self, address, data):
+        "send data to a specific address"
         message = pickle.dumps(data)
-        self.socket.sendto(message, adress)
+        self.socket.sendto(message, address)
 
     def close(self):
         "Close the server"
