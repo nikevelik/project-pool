@@ -1,6 +1,8 @@
 "some unclear description"
 import socket
-from Objects import Circle, Player, Vector, IdSet, GameState
+from GameState import GameState
+from Objects import Circle, Player, Vector, IdSet
+
 from Network import Server
 from NameMaker import NameMaker
 

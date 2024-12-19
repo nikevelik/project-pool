@@ -1,7 +1,8 @@
 "some unclear description"
 import socket
 import pygame
-from Objects import Vector, GameState, Camera
+from Objects import Vector, Camera
+from GameState import GameState
 from Screen import Screen
 from Network import Client
 
