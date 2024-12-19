@@ -5,7 +5,7 @@ import pickle
 
 class NetworkEntity:
     """Manage an abstract node in a socket-based network"""
-    BUFFER_SIZE = 4096*1024
+    BUFFER_SIZE = 4096 * 1024
     def __init__(self, socket, host, port):
         self.server_address = (host, port)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -20,7 +20,7 @@ class NetworkEntity:
         """listen indefinetely for incoming data"""
 
     def listen(self):
-        "wrap listen_loop in a thread"
+        """wrap listen_loop in a thread"""
         thread = threading.Thread(target=self.listen_loop)
         thread.daemon = True
         thread.start()

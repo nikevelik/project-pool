@@ -48,9 +48,9 @@ class GameState:
             b = random.randint(50, 200)
             self.food.append(Food(x, y, radius, (r, g, b)))
 
-    def move_player(self, player_id, delta, spped):
+    def move_player(self, player_id, delta, speed):
         """move a player"""
-        self.players[player_id].move(delta, spped)
+        self.players[player_id].move(delta, speed)
 
     def feed_player(self, player_id, radius_increase, score_increase):
         """feed a player"""

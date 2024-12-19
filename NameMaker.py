@@ -1,4 +1,4 @@
-""""""
+"""Module for handling the generation of new names"""
 import random
 
 class NameMaker:
