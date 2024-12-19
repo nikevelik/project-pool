@@ -92,6 +92,7 @@ class Player:
     def respawn(self, circle):
         """respawn player"""
         self._circle = circle
+        self.score = 0
 
     @classmethod
     def from_dict(cls, data):

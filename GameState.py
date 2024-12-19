@@ -78,6 +78,24 @@ class GameState:
                 res.append(i)
         return res
 
+    def generate_valid_circle_for_player_with_color(self, x1, x2, y1, y2, color, radius, offset):
+        "find a valid circle for a person to spawn into"
+        while True:
+            x = random.randint(x1, x2)
+            y = random.randint(y1, y2)
+            if(self.is_generated_position_valid(x, y, radius + offset)):
+                return Circle(x, y, radius, color)
+
+    def is_generated_position_valid(self, x, y, mindist):
+        "check whether a given point is far enough from existing players"
+        for enemy in self.players.values():
+            ex = enemy.getx()
+            ey = enemy.gety()
+            er = enemy.getr()
+            if (ex - x) ** 2 + (ey - y) ** 2 < (mindist + er) ** 2:
+                return False
+        return True
+
     @classmethod
     def default(cls):
         """create empty game state"""
