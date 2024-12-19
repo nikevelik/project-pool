@@ -1,6 +1,4 @@
-"some unclear description"
-import socket
-import pygame
+"Module for managing client-side game logic and networking in the agar.io game implementation"
 from Objects import Vector, Camera
 from GameState import GameState
 from Screen import Screen
@@ -9,11 +7,11 @@ from Network import Client
 class ClientGame:
     "Manage the communication between the game state, input, output and client's networking logic"
     FPS = 30
-    def __init__(self, pygame_obj, socket_obj):
+    def __init__(self, pygame_library, socket_library):
         self._id = None
         self._game_state = GameState.default()
-        self._pygame = pygame_obj
-        self._client = Client(socket_obj, 'localhost', 12345)
+        self._pygame = pygame_library
+        self._client = Client(socket_library, 'localhost', 12345)
         self._screen = None
 
     def start(self):
@@ -78,6 +76,3 @@ class ClientGame:
         "calculate camera position for drawing"
         player = self._game_state.players.get(self._id)
         return Camera(player.getx(), player.gety()) if player else Camera(0, 0)
-
-client_game = ClientGame(pygame, socket)
-client_game.start()

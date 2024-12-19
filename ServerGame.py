@@ -1,17 +1,15 @@
-"some unclear description"
-import socket
+"Module for managing server-side game logic and network communication in the agar.io game."
 from GameState import GameState
 from Objects import Circle, Player, Vector, IdSet
-
 from Network import Server
 from NameMaker import NameMaker
 
 class ServerGame:
-    "Some unclear description"
-    def __init__(self):
+    "Manages server-side state, player interactions, and network communication."
+    def __init__(self, socket_library):
         self.game_state = GameState.default()
         self.game_state.fill(-2000, -15000, 2000, 1500, 500)
-        self.server = Server(socket, 'localhost', 12345)
+        self.server = Server(socket_library, 'localhost', 12345)
         self.ids = IdSet()
         self.client_player_mapping = {}
         self.server.on_receive(self.process_request)
@@ -91,6 +89,3 @@ class ServerGame:
     def _generate_new_player(self, i_d):
         "generate new player"
         return Player(Circle(50, 50, 15, (0, 0, 255)), NameMaker.new(), 0, i_d)
-        
-
-ServerGame()
