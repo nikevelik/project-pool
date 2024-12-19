@@ -37,11 +37,11 @@ class Circle:
 
 class Player:
     "Manage a game player"
-    def __init__(self, circle, name, score, i_d):
+    def __init__(self, circle, name, score, uid):
         self._circle = circle
         self.name = name
         self.score = score
-        self.id = i_d
+        self.id = uid
 
     def get_circle(self):
         "get circle"
@@ -97,9 +97,9 @@ class Player:
         "create instance from dictionary"
         circle = Circle.from_dict(data["circle"])
         name = data["name"]
-        i_d = data["id"]
+        uid = data["id"]
         score = data["score"]
-        return cls(circle=circle, name=name, i_d=i_d, score=score)
+        return cls(circle=circle, name=name, uid=uid, score=score)
 
 class Food(Circle):
     "Manage a game food item"

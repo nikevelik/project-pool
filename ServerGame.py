@@ -34,11 +34,11 @@ class ServerGame:
 
     def handle_new_connection(self, address):
         "process request of new client joining the game"
-        i_d = self.ids.newid()
-        self.ids.add(i_d)
-        self.client_player_mapping[address] = i_d
-        self.game_state.add_player(self._generate_new_player(i_d))
-        self.server.broadcast_to(address, self._make_welcome_data(i_d))
+        uid = self.ids.newid()
+        self.ids.add(uid)
+        self.client_player_mapping[address] = uid
+        self.game_state.add_player(self._generate_new_player(uid))
+        self.server.broadcast_to(address, self._make_welcome_data(uid))
         self.broadcast_update()
 
     def handle_movement(self, address, delta):
@@ -57,11 +57,11 @@ class ServerGame:
         self.broadcast_update()
         self.client_player_mapping.pop(address)
 
-    def _make_welcome_data(self, i_d):
+    def _make_welcome_data(self, uid):
         "make data to send to new client"
         return {
             "type": "s_welcome",
-            "id": i_d,
+            "id": uid,
             "game_state": self.game_state.to_dict()
         }
     
@@ -86,6 +86,6 @@ class ServerGame:
         
         self.game_state.feed_player(player_id, len(eaten_food), len(eaten_food))
 
-    def _generate_new_player(self, i_d):
+    def _generate_new_player(self, uid):
         "generate new player"
-        return Player(Circle(50, 50, 15, (0, 0, 255)), NameMaker.new(), 0, i_d)
+        return Player(Circle(50, 50, 15, (0, 0, 255)), NameMaker.new(), 0, uid)
