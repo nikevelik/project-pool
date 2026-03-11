@@ -1,0 +1,61 @@
+
+**1. How does centralization on platforms like Facebook limit digital ownership for users?**
+A. Users don’t truly own content; platforms control it. ✅
+B. Users control everything; platforms have no influence.
+C. Users can edit other people’s content freely.
+D. Platforms delete content automatically without rules.
+
+**2. What’s the difference between fungible and non-fungible tokens, and why does it matter?**
+A. Fungible tokens are interchangeable; NFTs are unique. ✅
+B. Fungible tokens are always art; NFTs are like cash.
+C. NFTs are interchangeable like Bitcoin.
+D. Fungible tokens can’t be traded or sold.
+
+**3. How do smart contracts automatically manage digital rights and transactions?**
+A. They execute rules automatically without intermediaries. ✅
+B. Smart contracts need lawyers to execute each step.
+C. They allow users to hack transactions freely.
+D. They only work for physical goods, not digital ones.
+
+**4. Compare Proof of Work (PoW) and Proof of Stake (PoS) in terms of energy use and security.**
+A. PoW uses energy-heavy mining; PoS uses staked tokens. ✅
+B. PoW doesn’t use electricity; PoS burns massive energy.
+C. PoW is faster than PoS in all cases.
+D. PoS requires miners to solve puzzles like PoW.
+
+**5. How do digital wallets and private keys give users control over their assets?**
+A. Store private keys, giving users direct control. ✅
+B. Digital wallets are physical wallets you carry.
+C. They automatically create assets for users.
+D. Private keys are optional and not needed for control.
+
+**6. How does Web3 change ownership of in-game assets in digital games?**
+A. Players truly own, trade, and sell in-game items. ✅
+B. In-game assets can’t be traded at all in Web3.
+C. Web3 forces items to disappear after use.
+D. Players lose ownership immediately after buying.
+
+**7. What does “trustless” mean in blockchain systems, and why is it important?**
+A. Trust comes from code and network consensus. ✅
+B. Trustless means you have to trust a single person.
+C. It requires a bank to verify every transaction.
+D. Blockchain can’t work without central authority approval.
+
+**8. How does decentralized verification keep transactions transparent and secure?**
+A. Network checks make transactions transparent and secure. ✅
+B. Decentralized verification hides all transactions permanently.
+C. It lets users change past transactions freely.
+D. Transparency is removed so only admins see activity.
+
+**9. How do NFTs prove authenticity in digital art better than Web2 systems?**
+A. NFTs record ownership and origin on blockchain. ✅
+B. NFTs make ownership impossible to prove.
+C. Blockchain deletes proof of origin automatically.
+D. Web2 systems provide permanent, unchangeable records.
+
+**10. How could Web3 ownership shift affect online content, commerce, and communities?**
+A. Users gain control, enabling new economies and communities. ✅
+B. Web3 makes users lose control over content.
+C. It prevents trading and stops communities from forming.
+D. Ownership is entirely determined by platform admins.
+
