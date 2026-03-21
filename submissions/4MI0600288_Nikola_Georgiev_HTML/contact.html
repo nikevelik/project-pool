@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакти с Ротари Интернешънъл</title>
+</head>
+<body>
+
+    <header>
+        <img src="images/rotary-logo.png" alt="Официално лого на Ротари Интернешънъл" width="150" height="150">
+        <h1>Контакти с Ротари Интернешънъл</h1>
+        <p><em>Тук сме, за да ви помогнем да направите разлика</em></p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Начало</a></li>
+            <li><a href="about.html">За нас</a></li>
+            <li><a href="timeline.html">Нашата история</a></li>
+            <li><a href="data.html">Глобални данни</a></li>
+            <li><a href="contact.html">Контакти</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Свържете се с нас</h2>
+            <p>Независимо дали се интересувате от <strong>присъединяване към Ротари</strong>, желаете да научите повече за нашите програми или да партнирате с нас по проект за обществена услуга, ще се радваме да чуем от вас.</p>
+        </section>
+
+        <section>
+            <h2>Формуляр за контакт</h2>
+            <p>Моля, попълнете формуляра по-долу и представител на Ротари ще се свърже с вас в рамките на <mark>2-3 работни дни</mark>.</p>
+
+            <form action="#" method="post">
+                
+                <fieldset>
+                    <legend>Лична информация</legend>
+                    
+                    <label for="fullname">Пълно име:</label>
+                    <input type="text" id="fullname" name="fullname" required>
+                    
+                    <label for="email">Имейл адрес:</label>
+                    <input type="email" id="email" name="email" required>
+                    
+                    <label for="phone">Телефонен номер:</label>
+                    <input type="tel" id="phone" name="phone">
+                    
+                    <label for="birthdate">Дата на раждане:</label>
+                    <input type="date" id="birthdate" name="birthdate">
+                    
+                    <label for="age">Възраст:</label>
+                    <input type="number" id="age" name="age" min="18" max="120">
+                </fieldset>
+
+                <fieldset>
+                    <legend>Детайли на запитването</legend>
+                    
+                    <label for="inquiry-type">Тип запитване:</label>
+                    <select id="inquiry-type" name="inquiry-type" required>
+                        <option value="">-- Моля, изберете --</option>
+                        <option value="membership">Информация за членство</option>
+                        <option value="volunteer">Възможности за доброволчество</option>
+                        <option value="donation">Дарения и подпомагане</option>
+                        <option value="partnership">Възможности за партньорство</option>
+                        <option value="polio">Информация за ПолиоПлюс</option>
+                        <option value="youth">Младежки програми</option>
+                        <option value="other">Друго</option>
+                    </select>
+                    
+                    <p>Сте ли в момента член на Ротари?</p>
+                    <input type="radio" id="member-yes" name="current-member" value="yes">
+                    <label for="member-yes">Да</label>
+                    
+                    <input type="radio" id="member-no" name="current-member" value="no" checked>
+                    <label for="member-no">Не</label>
+                    
+                    <p>Области на интерес (изберете всички, които се отнасят):</p>
+                    <input type="checkbox" id="interest-peace" name="interests" value="peace">
+                    <label for="interest-peace">Насърчаване на мира</label>
+                    
+                    <input type="checkbox" id="interest-disease" name="interests" value="disease">
+                    <label for="interest-disease">Борба с болестите</label>
+                    
+                    <input type="checkbox" id="interest-water" name="interests" value="water">
+                    <label for="interest-water">Чиста вода и санитария</label>
+                    
+                    <input type="checkbox" id="interest-health" name="interests" value="health">
+                    <label for="interest-health">Майчино и детско здраве</label>
+                    
+                    <input type="checkbox" id="interest-education" name="interests" value="education">
+                    <label for="interest-education">Образование</label>
+                    
+                    <input type="checkbox" id="interest-economy" name="interests" value="economy">
+                    <label for="interest-economy">Икономическо развитие</label>
+                    
+                    <input type="checkbox" id="interest-environment" name="interests" value="environment">
+                    <label for="interest-environment">Околна среда</label>
+                    
+                    <label for="preferred-contact">Предпочитано време за контакт:</label>
+                    <input type="time" id="preferred-contact" name="preferred-contact">
+                    
+                    <label for="message">Вашето съобщение:</label>
+                    <textarea id="message" name="message" rows="8" cols="50" placeholder="Моля, разкажете ни повече за вашия интерес към Ротари..."></textarea>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Информация за местоположение</legend>
+                    
+                    <label for="country">Държава:</label>
+                    <select id="country" name="country" required>
+                        <option value="">-- Изберете държава --</option>
+                        <option value="US">САЩ</option>
+                        <option value="CA">Канада</option>
+                        <option value="GB">Обединено кралство</option>
+                        <option value="AU">Австралия</option>
+                        <option value="IN">Индия</option>
+                        <option value="JP">Япония</option>
+                        <option value="BR">Бразилия</option>
+                        <option value="DE">Германия</option>
+                        <option value="FR">Франция</option>
+                        <option value="IT">Италия</option>
+                        <option value="other">Друга</option>
+                    </select>
+                    
+                    <label for="city">Град:</label>
+                    <input type="text" id="city" name="city">
+                    
+                    <label for="postal">Пощенски код:</label>
+                    <input type="text" id="postal" name="postal">
+                </fieldset>
+
+                <fieldset>
+                    <legend>Допълнителни опции</legend>
+                    
+                    <input type="checkbox" id="newsletter" name="newsletter" value="yes">
+                    <label for="newsletter">Абониране за бюлетина на Ротари</label>
+                    
+                    <input type="checkbox" id="privacy" name="privacy" value="agreed" required>
+                    <label for="privacy">Съгласявам се с политиката за поверителност и условията за услуга <strong>(задължително)</strong></label>
+                    
+                    <label for="referral">Как чухте за Ротари?</label>
+                    <select id="referral" name="referral">
+                        <option value="">-- Моля, изберете --</option>
+                        <option value="friend">Приятел или член на семейството</option>
+                        <option value="social">Социални медии</option>
+                        <option value="search">Търсачка</option>
+                        <option value="event">Обществено събитие</option>
+                        <option value="news">Новинарска статия</option>
+                        <option value="member">Настоящ член на Ротари</option>
+                        <option value="other">Друго</option>
+                    </select>
+                </fieldset>
+
+                <button type="submit">Изпрати запитване</button>
+                <button type="reset">Изчисти формуляра</button>
+                
+            </form>
+        </section>
+
+        <section>
+            <h2>Други начини за връзка с нас</h2>
+            
+            <h3>Контакти на централата</h3>
+            <dl>
+                <dt>Адрес:</dt>
+                <dd>Rotary International<br>1560 Sherman Avenue<br>Evanston, <abbr title="Илинойс">IL</abbr> 60201<br>САЩ</dd>
+                
+                <dt>Телефон:</dt>
+                <dd>+1 (847) 866-3000</dd>
+                
+                <dt>Имейл:</dt>
+                <dd>contact@rotary.org</dd>
+                
+                <dt>Работно време:</dt>
+                <dd>Понеделник - Петък, 8:30 - 17:00 ч. <abbr title="Централно стандартно време">CST</abbr></dd>
+            </dl>
+
+            <h3>Намерете местен клуб</h3>
+            <p>Използвайте нашия <strong>инструмент за намиране на клубове</strong>, за да намерите Ротари, Ротаракт и Интеракт клубове близо до вас. С клубове почти всяка общност по света, сигурно ще намерите такъв, който отговаря на вашия график и интереси.</p>
+            
+            <p><em>Забележка: Този формуляр е само за демонстрационни цели и не изпраща данни.</em></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Ротари Интернешънъл - Службата над всичко</p>
+        <p><small>Вашата поверителност е важна за нас. Никога няма да споделим вашата контактна информация без вашето разрешение.</small></p>
+    </footer>
+
+</body>
+</html>
