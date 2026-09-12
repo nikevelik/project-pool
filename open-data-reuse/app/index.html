@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="bg">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Bulgaria Municipalities Map & NVO Exam Visualization</title>
+      <link rel="icon" href="data:,">
+      <style>
+         html, body {
+         margin: 0;
+         padding: 0;
+         font-family: sans-serif;
+         background: #f9f9f9;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         }
+         h1 {
+         text-align: center;
+         margin-top: 20px;
+         }
+         svg {
+         width: min(90vmin, 900px);
+         height: auto;
+         display: block;
+         margin: 20px 0;
+         }
+         /* Map styles */
+         .municipality {
+         stroke: #000;
+         stroke-width: 0.7px;
+         stroke-linejoin: round;
+         stroke-linecap: round;
+         cursor: pointer;
+         transition: stroke 0.2s, fill 0.2s;
+         pointer-events: all;
+         }
+         .municipality:hover {
+         fill: #e6f3ff;
+         stroke: #0077cc;
+         stroke-width: 1.2px;
+         }
+         .highlight {
+         fill: #e6f3ff;
+         stroke: #0077cc;
+         stroke-width: 1.2px;
+         pointer-events: none;
+         opacity: 0;
+         transition: opacity 0.15s ease-in-out;
+         }
+         .highlight.visible { opacity: 1; }
+         .tooltip {
+         position: absolute;
+         pointer-events: none;
+         background: rgba(255,255,255,0.85);
+         border: 1px solid #666;
+         padding: 2px 4px;
+         font-size: 12px;
+         color: #333;
+         border-radius: 3px;
+         white-space: nowrap;
+         display: none;
+         }
+         .tooltip.visible { display: block; }
+         /* Table & select styles */
+         select { margin: 10px; padding: 5px; }
+         table {
+         margin: 20px auto;
+         border-collapse: collapse;
+         width: 90%;
+         background-color: #fff;
+         color: #000;
+         }
+         th, td {
+         border: 1px solid #333;
+         padding: 6px;
+         font-size: 0.9em;
+         }
+         canvas { margin: 20px 0; }
+      </style>
+   </head>
+   <body>
+      <h1>Карта на общините в България & Резултати от НВО</h1>
+      <!-- Map -->
+      <div id="tooltip" class="tooltip"></div>
+      <svg id="map" viewBox="0 0 1000 600"></svg>
+      <!-- Exam controls -->
+      <label for="yearSelect">Избери година:</label>
+      <select id="yearSelect"></select>
+      <div id="tableContainer"></div>
+      <!-- Charts -->
+      <canvas id="avgChart" width="800" height="300"></canvas>
+      <canvas id="partChart" width="800" height="300"></canvas>
+      <script src="https://d3js.org/d3.v7.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="./data.js"></script>
+      <script>
+         /* ----------------- MAP ----------------- */
+         const svg = d3.select("#map");
+         const path = d3.geoPath();
+         const tooltip = d3.select("#tooltip");
+         const container = document.getElementById('tableContainer');
+         const select = document.getElementById('yearSelect');
+         const MUNICIPALITY_KEY = 1;
+         const MATAVG_KEY = 8;
+
+         function scoreToHex(score) {
+    if (score === null || isNaN(score)) return "#cccccc"; // gray for missing data
+
+    // Clamp the score between 0 and 100
+    score = Math.max(0, Math.min(100, score));
+
+    let r, g, b = 0;
+
+    if (score < 50) {
+        // red to yellow
+        r = 255;
+        g = Math.round(255 * (score / 50));
+    } else {
+        // yellow to green
+        g = 255;
+        r = Math.round(255 * ((100 - score) / 50));
+    }
+
+    // Convert each component to 2-digit hex
+    const toHex = x => x.toString(16).padStart(2, "0");
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+         
+         async function init() {
+          function populateSelect(summary){
+               for (const year of Object.keys(summary)) {
+                 const option = document.createElement('option');
+                 option.value = year;
+                 option.textContent = year;
+                 select.appendChild(option);
+               }
+             }
+            async function drawMap() {
+             function renderMap(geojson, csvData, summary) {
+                let log = [];
+                //console.log(JSON.stringify(Object.keys(summary))); // ["2018","2019","2020","2021","2022","2023","2024"]
+                Object.keys(summary).forEach(k => {
+                  log.push(summary[k].slice(0, 3));
+                });
+                //console.log(JSON.stringify(log)); // [[["﻿﻿Област","Община","Населено  място","Код","Училище","Явили се БЕЛ","Ср. успех в точки БЕЛ","Явили се MAT","Ср. успех в точки MAT"],["БЛАГОЕВГРАД","БАНСКО","ГР. БАНСКО","105201","СУ \"Неофит Рилски\"","57","48,17","57","28,08"],["БЛАГОЕВГРАД","БЕЛИЦА","ГР. БЕЛИЦА","105001","СУ \"Св.Св.Кирил и Методий\"","45","55,24","45","46,69"]],[["﻿Област","Община","Населено  място","Код","Училище","Явили се БЕЛ","Ср. успех в точки БЕЛ","Явили се MAT","Ср. успех в точки MAT"],["БЛАГОЕВГРАД","БЛАГОЕВГРАД","ГР.БЛАГОЕВГРАД","100020","ІІ ОУ \"Димитър Благоев\"","73","65,01","73","47,96"],["БЛАГОЕВГРАД","БЛАГОЕВГРАД","ГР.БЛАГОЕВГРАД","100040","ІV ОУ \"Димчо Дебелянов\"","27","50,20","27","31,96"]],[["﻿Област","Община","Населено място","Училище","Код по Админ","Явили се БЕЛ","Ср. успех в точки БЕЛ","Явили се МАТ","Ср. успех в точки МАТ"],["БЛАГОЕВГРАД","БАНСКО","ГР.БАНСКО","СУ \"Неофит Рилски\"","105 201","84","67,13","84","47,46"],["БЛАГОЕВГРАД","БАНСКО","С.ДОБРИНИЩЕ","ОУ \"Св. Кл. Охридски\"","105 202","18","69,22","18","46,6"]],[["Област","Община","Населено място","Училище","Код по Админ","Явили се БЕЛ","Ср. успех в точки БЕЛ","Явили се МАТ","Ср. успех в точки МАТ"],["БЛАГОЕВГРАД","БАНСКО","ГР.БАНСКО","Средно училище \"Неофит Рилски\"","105201","85","59,88","85","30,57"],["БЛАГОЕВГРАД","БАНСКО","С.ДОБРИНИЩЕ","Основно училище \"Свети Климент Охридски\"","105202","16","62,63","16","34,81"]],[["﻿﻿Област","Община","Населено  място","Код","Училище","Явили се БЕЛ","Ср. успех в точки БЕЛ","Явили се MAT","Ср. успех в точки MAT"],["БЛАГОЕВГРАД","БАНСКО","ГР.БАНСКО","Средно училище \"Неофит Рилски\"","105201","78","52.4","77","30.37"],["БЛАГОЕВГРАД","БАНСКО","С.ДОБРИНИЩЕ","Основно училище \"Свети Климент Охридски\"","105202","21","57.95","22","34.84"]],[["Област","Община","Населено място","Училище","Код по НЕИСПУО","БЕЛ Явили се","БЕЛ Ср. успех в точки","МАТ Явили се","МАТ Ср. успех в точки"],["БЛАГОЕВГРАД","БАНСКО","ГР.БАНСКО","Средно училище \"Неофит Рилски\"","105201","96","53.07","96","33.72"],["БЛАГОЕВГРАД","БАНСКО","С.ДОБРИНИЩЕ","Основно училище \"Свети Климент Охридски\"","105202","12","59.96","12","57.42"]],[["Област","Община","Населено място","Училище","Код по НЕИСПУО","БЕЛ Явили се","БЕЛ Ср. успех в точки","МАТ Явили се","МАТ Ср. успех в точки"],["БЛАГОЕВГРАД","БАНСКО","ГР.БАНСКО","Средно училище \"Неофит Рилски\"","105201","75","63.81","75","42.42"],["БЛАГОЕВГРАД","БАНСКО","С.ДОБРИНИЩЕ","Основно училище \"Свети Климент Охридски\"","105202","22","51.32","22","38.88"]]]
+                const nameByCode = {};
+                csvData.forEach(d => {
+                  //console.log(d.code, d.name)
+                  nameByCode[d.code] = d.name;
+                });
+
+                const yearlyResults = {};
+                Object.keys(summary).forEach(year => {
+                    const resultByCode = {};
+                    csvData.forEach(ce => {
+                      resultByCode[ce.code] = [];
+                        summary[year].slice(1).forEach(se => {
+                            //console.log(se[MUNICIPALITY_KEY], ce.name);
+                            if(se[MUNICIPALITY_KEY].toLowerCase() == ce.name.toLowerCase()){
+                              // console.log(ce.name.toLowerCase(), se[MATAVG_KEY]);
+                              resultByCode[ce.code].push(parseFloat(se[MATAVG_KEY]));
+                            }
+                        });
+                        // Calculate average
+                        const values = resultByCode[ce.code];
+                        if (values.length > 0) {
+                          const sum = values.reduce((acc, val) => acc + val, 0);
+                          const average = sum / values.length;
+                          resultByCode[ce.code] = parseFloat(average.toFixed(2));
+                        } else {
+                          resultByCode[ce.code] = null; // or 0, or NaN depending on your use case
+                        }
+                        yearlyResults[year] = resultByCode;
+                   })
+                });
+            
+                const projection = d3.geoMercator().fitSize([1000, 600], geojson);
+                path.projection(projection);
+            
+                const municipalities = svg.selectAll("path.municipality")
+                  .data(geojson.features)
+                  .enter()
+                  .append("path")
+                  .attr("class", "municipality")
+                  .attr("d", path)
+                  .attr("fill", d => {
+                    const res = yearlyResults["2018"][d.properties.nuts4];
+                    console.log(res);
+                    return scoreToHex(res);
+                  })
+                  .attr("stroke", "#000")
+                  .attr("stroke-width", 0.7);
+
+            
+                const highlight = svg.append("path")
+                  .attr("class", "highlight");
+            
+                municipalities
+                  .on("mouseover", function(event, d) {
+                    const code = d.properties.nuts4;
+                    const selectedYear = select.value; // get the year from the dropdown
+                    const avg = yearlyResults[selectedYear][code]; // use the selected year
+                    const name = (nameByCode[code] + (avg !== null ? ": " + avg : "")) || `(${code})`;
+                    
+                    highlight.attr("d", path(d)).classed("visible", true);
+                    tooltip.classed("visible", true).html(name);
+                  })
+                  .on("mousemove", function(event) {
+                    tooltip.style("left", (event.pageX + 8) + "px")
+                          .style("top", (event.pageY + 8) + "px");
+                  })
+                  .on("mouseout", function() {
+                    highlight.classed("visible", false);
+                    tooltip.classed("visible", false);
+                  });
+
+                  select.addEventListener("change", () => {
+                    const year = select.value;
+                    svg.selectAll("path.municipality")
+                      .transition()
+                      .duration(500)
+                      .attr("fill", d => {
+                          const res = yearlyResults[year][d.properties.nuts4];
+                          return scoreToHex(res);
+                      });
+                });
+             }
+             const geojson = await Data.geojson();
+             const csv = await Data.municip();
+             const summary = await Data.summary();
+             populateSelect(summary);
+             await renderMap(geojson, csv, summary);
+           }
+           await drawMap();
+         }
+         init();
+      </script>
+   </body>
+</html>
