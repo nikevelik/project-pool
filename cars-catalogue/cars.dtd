@@ -1,0 +1,52 @@
+<!ELEMENT catalog (brands, models, engines, cars)>
+
+<!-- ===== Brands Section ===== -->
+<!ELEMENT brands (brand+)>
+<!ELEMENT brand (name)>
+<!ATTLIST brand
+    id ID #REQUIRED
+>
+<!ELEMENT name (#PCDATA)>
+
+<!-- ===== Models Section ===== -->
+<!ELEMENT models (model+)>
+<!ELEMENT model (name)>
+<!ATTLIST model
+    id ID #REQUIRED
+    brandRef IDREF #REQUIRED
+>
+
+<!-- ===== Engines Section ===== -->
+<!ELEMENT engines (engine+)>
+<!ELEMENT engine (name, power)>
+<!ATTLIST engine
+    id ID #REQUIRED
+    modelRef IDREF #REQUIRED
+>
+<!ELEMENT power (#PCDATA)>
+
+<!-- ===== Cars Section ===== -->
+<!ELEMENT cars (car+)>
+<!ELEMENT car (price, description, color, transmission, category, year)>
+<!ATTLIST car
+    id ID #REQUIRED
+    modelRef IDREF #REQUIRED
+    engineRef IDREF #REQUIRED
+    picture-link CDATA #IMPLIED
+>
+
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT color EMPTY>
+<!ATTLIST color
+    value CDATA #REQUIRED
+>
+<!ELEMENT transmission EMPTY>
+<!ATTLIST transmission
+    type CDATA #REQUIRED
+>
+<!ELEMENT category EMPTY>
+<!ATTLIST category
+    type CDATA #REQUIRED
+>
+<!ELEMENT year (#PCDATA)>

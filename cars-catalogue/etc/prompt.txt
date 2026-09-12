@@ -1,0 +1,310 @@
+dtd:
+<!ELEMENT catalog (brands, models, engines, cars)>
+
+<!-- ===== Brands Section ===== -->
+<!ELEMENT brands (brand+)>
+<!ELEMENT brand (name)>
+<!ATTLIST brand
+    id ID #REQUIRED
+>
+<!ELEMENT name (#PCDATA)>
+
+<!-- ===== Models Section ===== -->
+<!ELEMENT models (model+)>
+<!ELEMENT model (name)>
+<!ATTLIST model
+    id ID #REQUIRED
+    brandRef IDREF #REQUIRED
+>
+
+<!-- ===== Engines Section ===== -->
+<!ELEMENT engines (engine+)>
+<!ELEMENT engine (name, power)>
+<!ATTLIST engine
+    id ID #REQUIRED
+    modelRef IDREF #REQUIRED
+>
+<!ELEMENT power (#PCDATA)>
+
+<!-- ===== Cars Section ===== -->
+<!ELEMENT cars (car+)>
+<!ELEMENT car (price, description, color, transmission, category, year)>
+<!ATTLIST car
+    id ID #REQUIRED
+    modelRef IDREF #REQUIRED
+    engineRef IDREF #REQUIRED
+    picture-link CDATA #IMPLIED
+>
+
+<!ELEMENT price (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT color EMPTY>
+<!ATTLIST color
+    value CDATA #REQUIRED
+>
+<!ELEMENT transmission EMPTY>
+<!ATTLIST transmission
+    type CDATA #REQUIRED
+>
+<!ELEMENT category EMPTY>
+<!ATTLIST category
+    type CDATA #REQUIRED
+>
+<!ELEMENT year (#PCDATA)>xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE catalog SYSTEM "cars.dtd"> -->
+<catalog>
+
+    <!-- Brands -->
+    <brands>
+        <brand id="b1"><name>Toyota</name></brand>
+        <brand id="b2"><name>BMW</name></brand>
+        <brand id="b3"><name>Audi</name></brand>
+        <brand id="b4"><name>Škoda</name></brand>
+    </brands>
+
+    <!-- Models -->
+    <models>
+        <model id="m1" brandRef="b1"><name>Corolla</name></model>
+        <model id="m2" brandRef="b1"><name>RAV4</name></model>
+        <model id="m3" brandRef="b2"><name>3 Series</name></model>
+        <model id="m4" brandRef="b2"><name>X5</name></model>
+        <model id="m5" brandRef="b3"><name>A4</name></model>
+        <model id="m6" brandRef="b3"><name>Q5</name></model>
+        <model id="m7" brandRef="b4"><name>Octavia</name></model>
+        <model id="m8" brandRef="b4"><name>Kodiaq</name></model>
+    </models>
+
+    <!-- Engines -->
+    <engines>
+        <engine id="e1" modelRef="m1"><name>Corolla_1.6L_petrol</name><power>132 hp</power></engine>
+        <engine id="e2" modelRef="m1"><name>Corolla_1.8L_hybrid</name><power>140 hp</power></engine>
+        <engine id="e3" modelRef="m2"><name>RAV4_2.0L_petrol</name><power>175 hp</power></engine>
+        <engine id="e4" modelRef="m2"><name>RAV4_2.5L_hybrid</name><power>222 hp</power></engine>
+        <engine id="e5" modelRef="m3"><name>3Series_2.0L_petrol</name><power>156 hp</power></engine>
+        <engine id="e6" modelRef="m3"><name>3Series_3.0L_diesel</name><power>286 hp</power></engine>
+        <engine id="e7" modelRef="m4"><name>X5_3.0L_petrol</name><power>282 hp</power></engine>
+        <engine id="e8" modelRef="m4"><name>X5_3.0L_diesel</name><power>340 hp</power></engine>
+        <engine id="e9" modelRef="m4"><name>X5_hybrid</name><power>389 hp</power></engine>
+        <engine id="e10" modelRef="m5"><name>A4_2.0L_petrol</name><power>150 hp</power></engine>
+        <engine id="e11" modelRef="m5"><name>A4_2.0L_diesel</name><power>204 hp</power></engine>
+        <engine id="e12" modelRef="m6"><name>Q5_2.0L_petrol</name><power>204 hp</power></engine>
+        <engine id="e13" modelRef="m6"><name>Q5_2.0L_diesel</name><power>231 hp</power></engine>
+        <engine id="e14" modelRef="m6"><name>Q5_hybrid</name><power>367 hp</power></engine>
+        <engine id="e15" modelRef="m7"><name>Octavia_1.5L_petrol</name><power>115 hp</power></engine>
+        <engine id="e16" modelRef="m7"><name>Octavia_2.0L_diesel</name><power>150 hp</power></engine>
+        <engine id="e17" modelRef="m8"><name>Kodiaq_2.0L_petrol</name><power>190 hp</power></engine>
+        <engine id="e18" modelRef="m8"><name>Kodiaq_2.0L_diesel</name><power>200 hp</power></engine>
+    </engines>
+
+    <!-- Cars -->
+    <cars>
+        <car id="c1" modelRef="m1" engineRef="e1" picture-link="images/c1.jpg">
+            <price>20000</price>
+            <description>Standard Corolla with 1.6L petrol engine</description>
+            <color value="white"/>
+            <transmission type="manual"/>
+            <category type="sedan"/>
+            <year>2024</year>
+        </car>
+
+        <car id="c2" modelRef="m2" engineRef="e4" picture-link="images/c2.jpg">
+            <price>35000</price>
+            <description>RAV4 hybrid with advanced features</description>
+            <color value="white"/>
+            <transmission type="automatic"/>
+            <category type="SUV"/>
+            <year>2024</year>
+        </car>
+
+        <car id="c3" modelRef="m3" engineRef="e6" picture-link="images/c3.jpg">
+            <price>48000</price>
+            <description>BMW 3 Series with 3.0L diesel engine and luxury trim</description>
+            <color value="red"/>
+            <transmission type="automatic"/>
+            <category type="sedan"/>
+            <year>2024</year>
+        </car>
+
+        <car id="c4" modelRef="m4" engineRef="e9" picture-link="images/c4.jpg">
+            <price>72000</price>
+            <description>BMW X5 hybrid offering exceptional performance and efficiency</description>
+            <color value="blue"/>
+            <transmission type="automatic"/>
+            <category type="SUV"/>
+            <year>2025</year>
+        </car>
+
+        <car id="c5" modelRef="m5" engineRef="e10" picture-link="images/c5.jpg">
+            <price>39000</price>
+            <description>Audi A4 with 2.0L petrol engine and premium interior</description>
+            <color value="red"/>
+            <transmission type="manual"/>
+            <category type="sedan"/>
+            <year>2024</year>
+        </car>
+
+        <car id="c6" modelRef="m6" engineRef="e14" picture-link="images/c6.jpg">
+            <price>65000</price>
+            <description>Audi Q5 hybrid with advanced safety features</description>
+            <color value="green"/>
+            <transmission type="automatic"/>
+            <category type="SUV"/>
+            <year>2025</year>
+        </car>
+
+        <car id="c7" modelRef="m7" engineRef="e15" picture-link="images/c7.jpg">
+            <price>26000</price>
+            <description>Škoda Octavia with efficient 1.5L petrol engine</description>
+            <color value="red"/>
+            <transmission type="manual"/>
+            <category type="hatchback"/>
+            <year>2023</year>
+        </car>
+
+        <car id="c8" modelRef="m8" engineRef="e18" picture-link="images/c8.jpg">
+            <price>42000</price>
+            <description>Škoda Kodiaq diesel 2.0L with 4x4 drivetrain</description>
+            <color value="blue"/>
+            <transmission type="automatic"/>
+            <category type="SUV"/>
+            <year>2025</year>
+        </car>
+
+    </cars>
+
+</catalog>
+xslt: 
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet
+    version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <xsl:template match="/catalog">
+    <fo:root>
+
+      <!-- Layout -->
+      <fo:layout-master-set>
+        <fo:simple-page-master master-name="A4"
+                               page-width="21cm" page-height="29.7cm"
+                               margin-top="1.5cm" margin-bottom="1.5cm"
+                               margin-left="2cm" margin-right="2cm">
+          <fo:region-body margin-top="1.5cm" margin-bottom="1.0cm"/>
+          <fo:region-before extent="1.5cm"/>
+          <fo:region-after extent="1.0cm"/>
+        </fo:simple-page-master>
+      </fo:layout-master-set>
+
+      <!-- Page sequence -->
+      <fo:page-sequence master-reference="A4">
+
+        <!-- Header -->
+        <fo:static-content flow-name="xsl-region-before">
+          <fo:block text-align="center"
+                    font-family="sans-serif"
+                    font-size="12pt"
+                    font-weight="bold"
+                    color="#444444"
+                    padding-top="6pt">
+            <xsl:text>Car Catalog</xsl:text>
+          </fo:block>
+        </fo:static-content>
+
+        <!-- Footer -->
+        <fo:static-content flow-name="xsl-region-after">
+          <fo:block text-align="center"
+                    font-family="sans-serif"
+                    font-size="10pt"
+                    color="#777777">
+            <fo:inline>Page </fo:inline><fo:page-number/><fo:inline> of </fo:inline>
+            <fo:page-number-citation ref-id="end-of-doc"/>
+          </fo:block>
+        </fo:static-content>
+
+        <!-- Body -->
+        <fo:flow flow-name="xsl-region-body"
+                 font-family="sans-serif"
+                 font-size="11pt"
+                 color="#222222">
+
+          <!-- Title -->
+          <fo:block text-align="center"
+                    font-size="26pt"
+                    font-weight="bold"
+                    space-after="18pt"
+                    color="#1f3350">
+            Car Catalog
+          </fo:block>
+
+          <!-- Each car -->
+          <xsl:for-each select="cars/car">
+            <xsl:variable name="model"  select="/catalog/models/model[@id = current()/@modelRef]"/>
+            <xsl:variable name="engine" select="/catalog/engines/engine[@id = current()/@engineRef]"/>
+            <xsl:variable name="brand"  select="/catalog/brands/brand[@id = $model/@brandRef]"/>
+
+            <!-- Each car starts on a new page -->
+            <fo:block break-before="page" keep-together="always"
+                      padding="20pt" margin-bottom="15pt"
+                      background-color="#f6f7f9"
+                      border="0.8pt solid #cccccc">
+
+              <!-- image -->
+              <fo:block text-align="center" space-after="12pt">
+                <fo:external-graphic src="{@picture-link}" content-width="18cm" scaling="uniform"/>
+              </fo:block>
+
+              <!-- headline -->
+              <fo:block font-size="15pt"
+                        font-weight="bold"
+                        color="#0f2133"
+                        space-after="8pt">
+                <xsl:value-of select="$brand/name"/>
+                <fo:inline> — </fo:inline>
+                <fo:inline font-weight="normal" color="#4b4b4b">
+                  <xsl:value-of select="$model/name"/>
+                </fo:inline>
+              </fo:block>
+
+              <!-- details -->
+              <fo:block keep-together="always" line-height="1.6em" font-size="12pt">
+                <fo:block><fo:inline font-weight="bold">Engine: </fo:inline>
+                  <xsl:value-of select="$engine/name"/> (<xsl:value-of select="$engine/power"/>)
+                </fo:block>
+
+                <fo:block><fo:inline font-weight="bold">Price: </fo:inline>
+                  $<xsl:value-of select="format-number(price, '#,##0.00')"/>
+                </fo:block>
+
+                <fo:block><fo:inline font-weight="bold">Description: </fo:inline>
+                  <xsl:value-of select="description"/>
+                </fo:block>
+
+                <fo:block><fo:inline font-weight="bold">Color: </fo:inline>
+                  <xsl:value-of select="color/@value"/>
+                </fo:block>
+
+                <fo:block><fo:inline font-weight="bold">Transmission: </fo:inline>
+                  <xsl:value-of select="transmission/@type"/>
+                </fo:block>
+
+                <fo:block><fo:inline font-weight="bold">Category: </fo:inline>
+                  <xsl:value-of select="category/@type"/>
+                </fo:block>
+
+                <fo:block><fo:inline font-weight="bold">Year: </fo:inline>
+                  <xsl:value-of select="year"/>
+                </fo:block>
+              </fo:block>
+            </fo:block>
+          </xsl:for-each>
+
+          <!-- Page-number target -->
+          <fo:block id="end-of-doc"/>
+
+        </fo:flow>
+      </fo:page-sequence>
+    </fo:root>
+  </xsl:template>
+
+</xsl:stylesheet>
