@@ -1,0 +1,12 @@
+version: "3.1"
+
+rules:
+- rule: Ask the LLM when the NLU cannot answer
+  steps:
+  - intent: nlu_fallback
+  - action: answer_with_llm
+
+- rule: Ask the LLM when there's an FAQ
+  steps:
+  - intent: INT_faq
+  - action: answer_with_llm

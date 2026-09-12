@@ -1,0 +1,15 @@
+*
+
+!.gitignore
+!README.md
+!config.yml
+!credentials.yml
+!endpoints.yml
+!data/          
+
+!data/*
+
+!data/domain/*
+!data/nlu/*
+!data/rules/*
+!data/stories/*

@@ -1,0 +1,93 @@
+version: '3.1'
+intents:
+- INT_wants_new_bot
+- INT_abort
+
+responses:
+  utter_ask_FRM_make_new_bot_SL_bot_name:
+  - text: | 
+      Okay, let's do this! After a few quick steps you will have the bot created. 
+      If you change your mind, just say "cancel".
+      What is the name of the bot?
+  utter_ok:
+  - text: Okay!.
+
+actions:
+- action_ask_SL_xconn_name
+- action_ask_SL_xinstrument_name
+- action_ask_SL_start_bot_flag
+- action_ask_SL_abort_make_bot_flag
+- action_clean_make_bot_slots
+- validate_FRM_make_new_bot
+
+forms:
+  FRM_make_new_bot:
+    required_slots:
+      - SL_xconn_name
+      - SL_bot_name
+      - SL_xinstrument_name
+      - SL_start_bot_flag
+      - SL_abort_make_bot_flag
+
+slots:
+# bot name
+  SL_bot_name:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: FRM_make_new_bot
+           requested_slot: SL_bot_name
+# exchange connector name
+  SL_xconn_name:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: FRM_make_new_bot
+           requested_slot: SL_xconn_name
+# exchange instrument name
+  SL_xinstrument_name:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: FRM_make_new_bot
+           requested_slot: SL_xinstrument_name
+# boolean flag for whether to start the new bot or not
+  SL_start_bot_flag:
+    type: bool
+    influence_conversation: false
+    mappings:
+      - type: from_intent
+        value: true
+        intent: affirm
+        conditions:
+        - active_loop: FRM_make_new_bot
+          requested_slot: SL_start_bot_flag
+      - type: from_intent
+        value: false
+        intent: deny
+        conditions:
+        - active_loop: FRM_make_new_bot
+          requested_slot: SL_start_bot_flag
+      # anything that is neither /deny nor /affirm 
+      # pick it up and then handle it as invalid 
+      - type: from_text 
+        value: null
+        conditions: 
+        - active_loop: FRM_make_new_bot
+          requested_slot: SL_start_bot_flag
+# boolean flag for whether to abort the form
+  SL_abort_make_bot_flag:
+    type: text
+    initial_value: false
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: FRM_make_new_bot
+           requested_slot: SL_abort_make_bot_flag

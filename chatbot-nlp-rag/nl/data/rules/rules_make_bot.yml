@@ -1,0 +1,33 @@
+version: "3.1"
+
+rules:
+- rule: IF user wants new bot, THEN start form for making bot
+  steps:
+  - intent: INT_wants_new_bot
+  - action: FRM_make_new_bot
+  - active_loop: FRM_make_new_bot
+
+- rule: IF user completes form for making bot, THEN trigger cleaning action
+  condition:
+  - active_loop: FRM_make_new_bot
+  steps:
+  - action: FRM_make_new_bot
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_clean_make_bot_slots
+
+- rule: Abort, outside form
+  steps:
+  - intent: INT_abort
+  - action: utter_ok
+
+- rule: Deny, outside form
+  steps:
+  - intent: INT_abort
+  - action: utter_ok
+
+- rule: Affirm outside form
+  steps:
+  - intent: INT_abort
+  - action: utter_ok

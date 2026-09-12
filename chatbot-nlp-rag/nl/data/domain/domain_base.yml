@@ -1,0 +1,37 @@
+version: '3.1'
+intents:
+- affirm
+- deny
+- greet
+ 
+responses:
+  utter_please_rephrase:
+  - text: I am sorry, I cannot help with that request.
+  utter_greet:
+  - text: >
+      Hey {user_id} in {env}, my name is Raz. I am the AI assistant in RazgaR. 
+      I can answer your questions or help you create a new bot (just type "create bot").  
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+entities:
+  - user_id
+  - env
+
+slots:
+  user_id:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: user_id
+  env:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: env
+
+actions:
+- give_echo
+- answer_with_llm 

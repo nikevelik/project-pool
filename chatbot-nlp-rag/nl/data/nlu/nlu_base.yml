@@ -1,0 +1,104 @@
+version: "3.1"
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+    - hi there
+    - greetings
+    - what's up?
+    - howdy
+    - how's it going?
+    - yo
+    - hiya
+    - hey y'all
+    - good day
+    - hey everyone
+    - hi all
+    - what’s happening?
+    - how's everything?
+    - what's new?
+    - hello everybody
+    - hey friend
+    - hi there!
+    - hello folks
+    - howdy partner
+    - hi there, how can I help?
+    - hey there, how’s it going?
+    - welcome
+
+- intent: affirm
+  examples: |
+    - yes
+    - y
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+    - absolutely
+    - definitely
+    - sure
+    - certainly
+    - right
+    - you bet
+    - exactly
+    - yep
+    - that’s right
+    - totally
+    - without a doubt
+    - for sure
+    - I agree
+    - that’s correct
+    - I’m on board
+    - you’re right
+    - sounds good
+    - I think so
+    - it’s a yes
+    - positively
+    - that’s a yes
+    - indeed so
+    - affirm
+
+- intent: deny
+  examples: |
+    - no
+    - n
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+    - absolutely not
+    - definitely not
+    - nope
+    - not at all
+    - I disagree
+    - that's not right
+    - I'm not interested
+    - I don't agree
+    - no chance
+    - not possible
+    - not in a million years
+    - not going to happen
+    - I’m not sure
+    - that’s a no
+    - not at this time
+    - not acceptable
+    - no thanks
+    - that won’t work
+    - I’m going to pass
+    - no sir
+    - no ma'am
+    - it's a no
+    - I'm not keen

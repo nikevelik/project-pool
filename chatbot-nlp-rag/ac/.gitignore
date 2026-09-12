@@ -1,0 +1,7 @@
+nohup.out
+actions/__pycache__
+actions/__pycache__/*
+actions/llm/__pycache__
+actions/llm/__pycache__/*
+chroma
+chroma/*

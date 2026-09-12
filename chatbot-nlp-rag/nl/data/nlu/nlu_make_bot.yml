@@ -1,0 +1,31 @@
+version: "3.1"
+nlu:
+- intent: INT_wants_new_bot
+  examples: |
+    - make bot
+    - new bot
+    - create bot
+    - build a new bot
+    - generate a bot
+    - start a new bot
+    - develop a bot
+    - initiate a new bot
+    - set up a bot
+    - I want a new bot
+    - how do I create a bot?
+    - can you make a new bot?
+    - help me create a bot
+    - I need a new bot
+    - create a new bot
+    - make a bot
+    - design a new bot
+    - I’d like to build a bot
+    - I’m interested in a new bot
+    - start building a bot
+    - I want to develop a new bot
+    - can we start a new bot?
+    - initiate the bot creation process
+
+- intent: INT_abort
+  examples: |
+    - cancel
