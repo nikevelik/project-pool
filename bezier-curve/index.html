@@ -1,0 +1,49 @@
+<canvas id="cvs" width="600" height="600"></canvas><button id="refresh">fresh</button><button id="undo">back</button>
+<label for="toggle">Show/Hide</label> <input type="checkbox" id="toggle"> 0 <input type="range" id="ipt" min="0" max="1" step="0.01" value="0.5"> 1
+<script>new class {
+  constructor(doc, cvs, ipt, toggle, clear, del) {
+    this.c = doc.getElementById(cvs);
+    this.ctx = this.c.getContext('2d');
+    this.pts = [];
+    this.t = 0.5;
+    this.dragged = null;
+    this.wasDragging = false;
+    this.showBezier = false;
+    this.calc = (p0, p1, t) => ({ x: p0.x + (p1.x-p0.x)*t, y: p0.y + (p1.y-p0.y)*t });
+    this.dcstlj = (t, pts) => {
+      let temp = [...pts];
+      for (let r=1; r<pts.length; r++) for (let i=0; i<pts.length-r; i++) temp[i]=this.calc(temp[i], temp[i+1], t);
+      return temp[0];
+    }
+    this.drawpts = (pts, color ) => pts.forEach(p=>{ this.ctx.fillStyle=color; this.ctx.beginPath(); this.ctx.arc(p.x,p.y,3,0,2*Math.PI); this.ctx.fill(); });
+    this.drawLines = (pts, color, width) =>  { if(pts.length<2) return; this.ctx.strokeStyle=color; this.ctx.lineWidth=width; this.ctx.beginPath(); this.ctx.moveTo(pts[0].x,pts[0].y); pts.slice(1).forEach(p=>this.ctx.lineTo(p.x,p.y)); this.ctx.stroke(); }
+    this.addEvents(doc, cvs, ipt, toggle, clear, del);
+    this.animate();
+  }
+  addEvents(doc, cvs, ipt, toggle, clear, del) {
+    const getPos = e => ({ x: e.clientX - this.c.getBoundingClientRect().left, y: e.clientY - this.c.getBoundingClientRect().top });
+    this.c.addEventListener('mousedown', e => { this.dragged = this.pts.find(p => Math.hypot(p.x-getPos(e).x, p.y-getPos(e).y)<=5) || null; this.wasDragging = false; });
+    this.c.addEventListener('mousemove', e => { if(this.dragged) { Object.assign(this.dragged, getPos(e)); this.wasDragging = true; } });
+    this.c.addEventListener('mouseup', () => this.dragged = null);
+    this.c.addEventListener('click', e => { if(!this.wasDragging) this.pts.push(getPos(e)); this.wasDragging = false; });
+    doc.getElementById(ipt).addEventListener('input', () => this.t = parseFloat(doc.getElementById(ipt).value));
+    doc.getElementById(toggle).addEventListener('change', () => this.showBezier = doc.getElementById(toggle).checked);
+    doc.getElementById(clear).addEventListener('click', () => this.pts = []);
+    doc.getElementById(del).addEventListener('click', () => this.pts.pop());
+  }
+  animate() {
+    this.ctx.clearRect(0,0,this.c.width,this.c.height); this.ctx.fillStyle='black'; this.ctx.fillRect(0,0,this.c.width,this.c.height);
+    this.drawpts(this.pts,'green'); this.drawLines(this.pts,'green', 3);
+    if(this.showBezier && this.pts.length > 1){
+      this.ctx.strokeStyle='red'; this.ctx.lineWidth=2; this.ctx.beginPath(); this.ctx.moveTo(this.pts[0].x,this.pts[0].y);
+      for(let t=0;t<=1.01;t+=0.01)this.ctx.lineTo(...Object.values(this.dcstlj(t,this.pts)));
+      this.ctx.stroke();
+    }
+    let pts=[...this.pts];
+    while(pts.length>1){
+      pts=pts.map((_,i)=>i<pts.length-1?this.calc(pts[i],pts[i+1],this.t):null).filter(Boolean);
+      this.drawpts(pts,'blue'); this.drawLines(pts,'blue', 1);
+    }
+    requestAnimationFrame(this.animate.bind(this));
+  }
+}(document, 'cvs','ipt','toggle','refresh','undo');</script>
