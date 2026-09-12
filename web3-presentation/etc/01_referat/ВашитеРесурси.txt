@@ -1,0 +1,9 @@
+- Investopedia: Блокчейн — https://www.investopedia.com/terms/b/blockchain.asp
+- Webopedia: Как работи блокчейн и приложения — https://www.webopedia.com/definitions/blockchain-how-it-works-and-use-cases/
+- Blockchain Council: Пълно ръководство за Web3 — https://www.blockchain-council.org/guide/the-ultimate-guide-to-web3/
+- Britannica: Как работят умните договори — https://www.britannica.com/money/how-smart-contracts-work
+- Investopedia: Умни договори — https://www.investopedia.com/terms/s/smart-contracts.asp
+- Webopedia: Какво е умен договор? — https://www.webopedia.com/crypto/learn/whats-a-smart-contract/
+- Investopedia: Незаменими токени (NFT) — https://www.investopedia.com/non-fungible-tokens-nft-5115211
+- Nexus Docs: Преглед на основите на Web3 — https://docs.nexus.xyz/essentials/web3-fundamentals/overview
+- arXiv: Дигитална собственост — https://arxiv.org/abs/2203.00398
