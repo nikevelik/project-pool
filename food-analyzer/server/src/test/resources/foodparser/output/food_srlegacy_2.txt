@@ -1,0 +1,7 @@
+Information:
+    Ingredients: N/A
+    Energy: 43kcal
+    Protein: 0.4g
+    Fat: 0.2g
+    Carbs: 10.1g
+    Fiber: N/A

@@ -1,0 +1,11 @@
+SearchResult:
+1. Food(id: N/A, gtinUpc: 867824000001, description: APPLE)
+2. Food(id: N/A, gtinUpc: 070038322238, description: APPLE)
+3. Food(id: N/A, gtinUpc: 887434010245, description: APPLE)
+4. Food(id: N/A, gtinUpc: N/A, description: Apple, candied)
+5. Food(id: N/A, gtinUpc: N/A, description: Apple, raw)
+6. Food(id: N/A, gtinUpc: N/A, description: Apple, dried)
+7. Food(id: N/A, gtinUpc: N/A, description: Crisp, apple)
+8. Food(id: N/A, gtinUpc: N/A, description: Apple, baked)
+9. Food(id: N/A, gtinUpc: N/A, description: Apple cider)
+10. Food(id: N/A, gtinUpc: N/A, description: Cobbler, apple)

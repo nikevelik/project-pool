@@ -1,0 +1,11 @@
+SearchResult:
+1. Food(id: 2402614, gtinUpc: 079900001868, description: STRAWBERRIES)
+2. Food(id: 2419947, gtinUpc: 880879002325, description: STRAWBERRIES)
+3. Food(id: 2430168, gtinUpc: 688267006074, description: STRAWBERRIES)
+4. Food(id: 1939709, gtinUpc: 070038593638, description: STRAWBERRIES)
+5. Food(id: 2375605, gtinUpc: 030223114635, description: STRAWBERRIES)
+6. Food(id: 2377355, gtinUpc: 840600106197, description: STRAWBERRIES)
+7. Food(id: 2387090, gtinUpc: 850019080094, description: STRAWBERRIES)
+8. Food(id: 2429406, gtinUpc: 07789027937, description: STRAWBERRIES)
+9. Food(id: 2072113, gtinUpc: 071022320407, description: STRAWBERRIES)
+10. Food(id: 2394347, gtinUpc: 079900001851, description: STRAWBERRIES)

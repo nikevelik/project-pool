@@ -1,0 +1,11 @@
+SearchResult:
+1. Food(id: 2057648, gtinUpc: 094395000172, description: CHEDDAR CHEESE)
+2. Food(id: 2015943, gtinUpc: 75925306223, description: CHEDDAR CHEESE)
+3. Food(id: 2118224, gtinUpc: 075925300009, description: CHEDDAR CHEESE)
+4. Food(id: 2021456, gtinUpc: 041497083411, description: CHEDDAR CHEESE)
+5. Food(id: 2021458, gtinUpc: 041497083022, description: CHEDDAR CHEESE)
+6. Food(id: 2021597, gtinUpc: 041497094981, description: CHEDDAR CHEESE)
+7. Food(id: 2116771, gtinUpc: 075925299914, description: CHEDDAR CHEESE)
+8. Food(id: 2095236, gtinUpc: 828653282457, description: CHEDDAR CHEESE)
+9. Food(id: 356742, gtinUpc: 216221709121, description: CHEDDAR CHEESE)
+10. Food(id: 2288854, gtinUpc: 041290110857, description: CHEDDAR CHEESE)

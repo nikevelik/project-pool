@@ -1,0 +1,11 @@
+SearchResult:
+1. Food(id: 454004, gtinUpc: 867824000001, description: N/A)
+2. Food(id: 2117388, gtinUpc: 070038322238, description: N/A)
+3. Food(id: 2124902, gtinUpc: 887434010245, description: N/A)
+4. Food(id: 2709294, gtinUpc: N/A, description: N/A)
+5. Food(id: 2709215, gtinUpc: N/A, description: N/A)
+6. Food(id: 2709196, gtinUpc: N/A, description: N/A)
+7. Food(id: 2708023, gtinUpc: N/A, description: N/A)
+8. Food(id: 2709220, gtinUpc: N/A, description: N/A)
+9. Food(id: 2709319, gtinUpc: N/A, description: N/A)
+10. Food(id: 2708019, gtinUpc: N/A, description: N/A)

@@ -1,0 +1,2 @@
+SearchResult:
+1. Food(id: 2041155, gtinUpc: 009800146130, description: RAFFAELLO, ALMOND COCONUT TREAT)
