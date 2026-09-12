@@ -1,0 +1,91 @@
+SpotHawk Business Canvas
+NIKOLA GEORGIEV
+MAR06
+0.02
+
+--- Segments ---
+Urban drivers/commuters – People who regularly need parking in busy city centers; want fast, reliable info on available spots.
+Visitors and occasional drivers – Tourists, shoppers, or event-goers unfamiliar with local parking patterns; need easy guidance to free spaces.
+City municipalities or administrations – Interested in reducing congestion, optimizing parking infrastructure, and monitoring urban mobility.
+
+--- Value ---
+Real-time parking availability: Shows which parking spots are free right now.
+Predictive guidance: Uses historical data to estimate where spots are likely to open soon.
+Time and stress savings: Reduces the time spent searching for parking in busy areas.
+Traffic and fuel efficiency: Helps cut unnecessary driving, lowering congestion and emissions.
+Seamless access: Available through mobile app for convenience.
+Operational insights for businesses/cities: Lets parking operators and municipalities monitor usage and optimize space management.
+
+--- Channels ---
+Mobile app / navigation integration – primary way drivers see available parking spots.
+Push notifications / alerts – instant updates when a preferred area has free spaces.
+Website / city portal – optional access for planning trips in advance.
+Partnerships with rideshare / mapping services – expand reach by integrating into apps people already use.
+
+--- Relationships ---
+Self-service & automated guidance: Users access real-time parking info through the app or navigation system with minimal human intervention.
+Personalized experience: Predictive recommendations based on user location, parking history, and preferences.
+Proactive notifications: Alerts for nearby free spaces or high-probability availability zones.
+Trust & reliability: Consistently updated data to build confidence in the system.
+
+--- Activities ---
+Drone Operations & Maintenance – patrolling urban areas, keeping drones functional and compliant.
+Data Capture & Processing – collecting aerial images and running computer vision algorithms.
+Real-Time Parking Map Updates – continuously integrating drone data into the app and predictive model.
+Predictive Analytics – refining historical data to forecast parking availability.
+App & Platform Management – ensuring mobile interface is accurate, responsive, and user-friendly.
+Customer Support – assisting users, handling issues, and maintaining engagement.
+
+--- Resources ---
+Autonomous drones – hardware capable of safe urban flight and image capture.
+Computer vision software – algorithms to detect parking occupancy accurately.
+Data infrastructure – cloud storage, real-time processing, and mapping platforms.
+Mobile app / navigation interface – for delivering parking info to users.
+Skilled team – engineers for drones, AI, and software maintenance.
+Regulatory approvals / permits – legal clearance for urban drone operations.
+
+--- Partners ---
+Drone manufacturers & suppliers – provide reliable hardware and maintenance support.
+Computer vision/AI tech providers – supply software, models, or APIs for image analysis.
+City authorities & parking operators – grant permissions for aerial surveillance and access to municipal parking data.
+Telecom & cloud service providers – enable real-time data transmission, storage, and processing.
+Mapping/navigation platforms – provide geographical data
+
+--- Revenue ---
+Subscription fees: Drivers pay a monthly/yearly fee for real-time access to parking availability and predictive analytics.
+Pay-per-use: Occasional users can pay for single-session access through the app.
+B2B partnerships: Parking lot operators, municipalities, and delivery/logistics companies pay for integration of data to optimize operations.
+Advertising & premium placement: Local businesses or services can sponsor highlighted parking zones or promoted areas in the app.
+
+--- Costs ---
+Drone fleet costs – purchase, maintenance, batteries, and replacement cycles.
+Software and AI – development, updates, cloud computing, and computer vision processing.
+Data infrastructure – servers, storage, and network bandwidth for real-time maps.
+Personnel – engineers, drone operators, and support staff.
+Regulatory and insurance – permits for drone flights, liability coverage, compliance fees.
+Marketing & customer support – app promotion, customer service, and retention efforts.
+
+
+Mockups 
+
+1. Login Screen
+    * User authentication with email/social login, option for guest access.
+2. Home Screen
+    * Overview dashboard: quick stats, recent notifications, and shortcut to map.
+3. Parking Map – Default View
+    * Real-time map with available spots, user location, search, and filters.
+4. Parking Map – Filtered/Search Results
+    * Map showing filtered results by distance with search bar active.
+5. Parking Map – Spot Selected
+    * Map with a spot tapped, showing a popup preview with basic info.
+6. Parking Map – No Spots Available
+    * Map with overlay message indicating no available spots in the area.
+7. Parking Detail – Available Spot
+    * Full details: price, restrictions, distance, photo, and get directions button.
+8. Parking Detail – Reserve/Navigation
+    * Confirmation dialog or screen after tapping to get directions.
+9. Parking Detail – Occupied/Unavailable
+    * Details for an occupied spot, with suggestions for alternatives.
+10. Parking Detail – Error/Loading State
+    * Loading spinner or error message if details fail to load.
+
