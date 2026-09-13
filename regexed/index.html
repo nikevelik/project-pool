@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;300;400&display=swap" rel="stylesheet">
+  <title>Regex Crosswords</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #ccc;
+      color: #000;
+      margin: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .puzzle {
+      page-break-after: always;
+      margin-bottom: 60px;
+      background: #fff;
+      width: 210mm;
+      min-height: 297mm;
+      padding: 16mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .puzzle h2 {
+      margin-bottom: 16px;
+      margin-top: 12px;
+      font-size: 8px;
+    }
+
+    .page-number {
+      font-family: "Lucida Console", monospace;
+      font-size: 8px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      position: absolute;
+      bottom: 10mm;
+    }
+
+    /* print: strip screen-only decoration so each puzzle is exactly one A4 page */
+    @media print {
+      body {
+        margin: 0;
+        background: #fff;
+      }
+      .page-pair {
+        margin-bottom: 0;
+      }
+      .puzzle {
+        margin-bottom: 0;
+        border: none;
+        width: auto;
+        height: 297mm;
+        min-height: 0;
+      }
+      .puzzle:last-child {
+        page-break-after: auto;
+      }
+    }
+
+    .page-pair {
+      page-break-after: always;
+      margin-bottom: 60px;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+    }
+
+    .page-pair > .page-number {
+      position: absolute;
+      bottom: 10mm;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .page-pair::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 16mm;
+      bottom: 16mm;
+      width: 4px;
+      background: #000;
+    }
+
+    .page-pair .puzzle {
+      page-break-after: auto;
+      margin-bottom: 0;
+      width: 105mm;
+      min-height: 297mm;
+      padding: 8mm;
+      border-left: none;
+      border-right: none;
+    }
+
+    .page-pair .puzzle + .puzzle {
+      border-left: none;
+    }
+
+    hr.puzzle-divider {
+      width: 80%;
+      border: none;
+      border-top: 4px solid #000;
+      margin: 8mm 0;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 4px;
+      border: none;
+    }
+
+    /* grid (solution) cells */
+    td.cell {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      border: 1px solid #aaa;
+      border-radius: 7px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 16px;
+      padding: 0;
+    }
+
+    /* all clue cells: no border, monospace, single line */
+    td.clue {
+      border: none;
+      padding: 0;
+      font-family: "Roboto Mono", monospace;
+      font-size: 12px;
+      font-weight: 100;
+      white-space: nowrap;
+      overflow: visible;
+    }
+
+    .clue > span {
+      display: flex;
+    }
+
+    /* horizontal clues (left/right of grid): fixed row height, text hugs the grid */
+    .clue-left, .clue-right {
+      height: 40px;
+    }
+    .clue-left > span {
+      justify-content: flex-end;
+      align-items: center;
+      height: 40px;
+      padding-right: 8px;
+    }
+    .clue-right > span {
+      justify-content: flex-start;
+      align-items: center;
+      height: 40px;
+      padding-left: 8px;
+    }
+
+    /* vertical clues (top/bottom of grid): rotated, content-sized */
+    .clue-top, .clue-bottom {
+      width: 40px;
+      text-align: center;
+    }
+    .clue-top {
+      vertical-align: bottom;
+    }
+    .clue-bottom {
+      vertical-align: top;
+    }
+    .clue-top > span, .clue-bottom > span {
+      writing-mode: vertical-lr;
+      display: inline-block;
+    }
+    .clue-top > span {
+      padding-bottom: 8px;
+    }
+    .clue-bottom > span {
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-pair">
+  <div class="puzzle">
+    <h2>[0] The OR symbol</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>A|B</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>A|Z</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[0] A Range of characters</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[ABC]</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[BDF]</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[0] Characters NOT to include</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[^AB]</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[ABC]</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[0] Zero or more</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>A*</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>A</span></td>
+        <td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>AB*</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+  </div>
+  <div class="puzzle">
+    <h2>[0] Zero or one</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>A?B?</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>A|C</span></td>
+        <td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>B</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[0] One or more</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>A+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>A|B</span></td>
+        <td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>A|Z</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[0] Backreference</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(A)\1</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>A|B</span></td>
+        <td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>A|B</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[0] Specific amount</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>A{2,}</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>A{1}</span></td>
+        <td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>B|A</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+  </div>
+    <div class="page-number">--- 01 ---</div>
+  </div>
+
+  <div class="page-pair">
+  <div class="puzzle">
+    <h2>[0] Space</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>A|\s</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>\s</span></td>
+        <td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[1] Beatles</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[^SPEAK]+</span></td>
+        <td class="clue clue-top"><span>EP|IP|EF</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>HE|LL|O+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[PLEASE]+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[1] Naughty</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(A|B|C)\1</span></td>
+        <td class="clue clue-top"><span>(AB|OE|SK)</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>.*M?O.*</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(AN|FE|BE)</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[1] Ghost</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[COBRA]+</span></td>
+        <td class="clue clue-top"><span>(AB|O|OR)+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(.)+\1</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[^ABRC]+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+  </div>
+  <div class="puzzle">
+    <h2>[1] Symbolism</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>.?.+</span></td>
+        <td class="clue clue-top"><span>.+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[*]+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>/+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[1] Airstrip One</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>\d[2480]</span></td>
+        <td class="clue clue-top"><span>56|94|73</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>18|19|20</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[6789]\d</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[2] Always remember</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>UB|IE|AW</span></td>
+        <td class="clue clue-top"><span>[TUBE]*</span></td>
+        <td class="clue clue-top"><span>[BORF].</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[NOTAD]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>WEL|BAL|EAR</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+  </div>
+    <div class="page-number">--- 02 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[2] Johnny</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[BQW](PR|LE)</span></td>
+        <td class="clue clue-top"><span>[RANK]+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[AWE]+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[ALP]+K</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(PR|ER|EP)</span></td>
+        <td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[2] Earth</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>.(.)\1</span></td>
+        <td class="clue clue-top"><span>.*[WAY]+</span></td>
+        <td class="clue clue-top"><span>[RAM].[OH]</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>CAT|FOR|FAT</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>RY|TY\-</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[TOWEL]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[2] Encyclopedia</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[JUNDT]*</span></td>
+        <td class="clue clue-top"><span>APA|OPI|OLK</span></td>
+        <td class="clue clue-top"><span>(NA|FE|HE)[CV]</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[DEF][MNO]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[^DJNU]P[ABC]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[ICAN]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 03 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[2] Technology</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[^NRU](NO|ON)</span></td>
+        <td class="clue clue-top"><span>(D|FU|UF)+</span></td>
+        <td class="clue clue-top"><span>(FO|A|R)*</span></td>
+        <td class="clue clue-top"><span>(N|A)*</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[RUNT]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>O.*[HAT]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(.)*DO\1</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[3] Royal Dinner</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(FI|A)+</span></td>
+        <td class="clue clue-top"><span>(YE|OT)K</span></td>
+        <td class="clue clue-top"><span>(.)[IF]+</span></td>
+        <td class="clue clue-top"><span>[NODE]+</span></td>
+        <td class="clue clue-top"><span>(FY|F|RG)+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(Y|F)(.)\2[DAF]\1</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(U|O|I)*T[FRO]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[KANE]*[GIN]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 04 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[3] Regular Workout</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[ARK]*O.*</span></td>
+        <td class="clue clue-top"><span>(.).*\1N\1</span></td>
+        <td class="clue clue-top"><span>(SOD|DO|GE)*</span></td>
+        <td class="clue clue-top"><span>[FAXUS]*</span></td>
+        <td class="clue clue-top"><span>[LOPITY]*</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[UGLER]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[CAST]*REX[PEA]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[SIRES]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>(L|OFT|ON)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>H*(AY|ED)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[3] We apologise for the inconvenience</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[ABC]*(.)\1(ME|UO)</span></td>
+        <td class="clue clue-top"><span>(.)T*E*\1</span></td>
+        <td class="clue clue-top"><span>[HAS]*(SN|PA)</span></td>
+        <td class="clue clue-top"><span>(WE|GA|AL)T*O+</span></td>
+        <td class="clue clue-top"><span>(EG|BEEE)[WIQ]*</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[QA].[WEST]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(HE|RT|TK)*.</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(RE|QR)[QUART]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[EUW]*S[RITE]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>(.)(.)\2\1[WE]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 05 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[3] Questionable</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(!!|\?!|;\?)*\?</span></td>
+        <td class="clue clue-top"><span>[&lt;!?*#&gt;]*</span></td>
+        <td class="clue clue-top"><span>[?*!].\?[!&lt;*]*</span></td>
+        <td class="clue clue-top"><span>(.)[?#]\1\?\1</span></td>
+        <td class="clue clue-top"><span>[&lt;?&gt;][\[!]*[?\|#]</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[#?]!*[:?;]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(.)([;?])\1\2\1</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>["!"]*\?!*#?</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>.[;?][&gt;!?]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>(.)[;!"]*!\1</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[3] Hamlet</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[RUTH]*(OE|EO)[RB]*</span></td>
+        <td class="clue clue-top"><span>(BG|ON|KK)+[RIF]+</span></td>
+        <td class="clue clue-top"><span>(MN|BO|FI)[EU]{2,}</span></td>
+        <td class="clue clue-top"><span>(KT|AL|ET)+G</span></td>
+        <td class="clue clue-top"><span>[OH](PR|AX|TR)+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[IT](O)*(BE|AD)*\1</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[NORMAL]+T{2}</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>.*(XA|BE).*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>(EG|UL){2}[ALF]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>[REQ]*(G|P)(.)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 06 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[4] Ten o'clock</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(ENT|NTE|NET)*</span></td>
+        <td class="clue clue-top"><span>[WEAR]*</span></td>
+        <td class="clue clue-top"><span>[R-Z]E*[M-R]</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(T|E|N)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(.)*W+\1</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[LENT]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[4] Third</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(GE|PE)[AL]*</span></td>
+        <td class="clue clue-top"><span>[EAF]+(YE|AB)*</span></td>
+        <td class="clue clue-top"><span>(QR|LE)(G|I|M|P)</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(L|E|D|G|Y)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(A|E|J)*Y.*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[FLEDG]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[4] Horn</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(TS|RA|QA)*</span></td>
+        <td class="clue clue-top"><span>(AB|UT|AR)*</span></td>
+        <td class="clue clue-top"><span>(K|T)U.*(A|R)</span></td>
+        <td class="clue clue-top"><span>(AR|FS|ST)+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[TRASH]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(FA|AB)[TUP]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(BA|TH|TU)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>.*A.*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 07 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[4] Open the lid</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(AP|TR|OR)*</span></td>
+        <td class="clue clue-top"><span>R[AJEQ]*</span></td>
+        <td class="clue clue-top"><span>[A-O]{2}(AR|AJ)*</span></td>
+        <td class="clue clue-top"><span>[RAMP]*(T|O)+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[PARTY]*[POD]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(JA|OK|RA){2}</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(.)*J\1[RQ]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[CAP]*(T|R|Y)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[4] Time Walker</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>.*E.*</span></td>
+        <td class="clue clue-top"><span>[^P]I(IT|ME)</span></td>
+        <td class="clue clue-top"><span>(EM|FE)(IT|IP)</span></td>
+        <td class="clue clue-top"><span>(TS|PE|KE)*</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(EP|ST)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>T[A-Z]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>.M.T</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>.*P.[S-X]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[5] Telekinesis</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[D-HJ-M]</span></td>
+        <td class="clue clue-top"><span>[^A-RU-Z]</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[A-GN-Z]+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^A-DI-S]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[^F-KM-Z]</span></td>
+        <td class="clue clue-bottom"><span>[A-KS-V]</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 08 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[5] GMC Vandura</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[^MCI]+</span></td>
+        <td class="clue clue-top"><span>.A</span></td>
+        <td class="clue clue-top"><span>(TM|BF)</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(CAT|A-T)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^KI\sP]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[MA\-\sE]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(M|APS|EA)*</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[AI][E\s]</span></td>
+        <td class="clue clue-bottom"><span>[A\-Z]+</span></td>
+        <td class="clue clue-bottom"><span>[\sT\-M]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 09 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[5] Bat Man</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>.*[GAF]*</span></td>
+        <td class="clue clue-top"><span>(P|ET|O|TEA)*</span></td>
+        <td class="clue clue-top"><span>[RUSH]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[ONE]*[SKA]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.*(O|S)*</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>.*(RE|ER)</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^GOA]*</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>A+[TUB]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[STUPA]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>(NF|FA|A|FN)+</span></td>
+        <td class="clue clue-bottom"><span>.*(A|E|I).*</span></td>
+        <td class="clue clue-bottom"><span>[SUPER]*</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[5] Big Mac</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(.)\1(.)\2</span></td>
+        <td class="clue clue-top"><span>[C\sOU]+</span></td>
+        <td class="clue clue-top"><span>[^PU\sH]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>.[LUH]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.*L+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(P|K)[^U]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[PUF\s]*</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>.*C+[TIF]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[TIC]*</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>(NO|ONE|ION)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[NOI\sE]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[PIF]+</span></td>
+        <td class="clue clue-bottom"><span>.*[OWE]*</span></td>
+        <td class="clue clue-bottom"><span>(TN|LF|TF)*</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 10 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[5] The Lektor Device</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[^RO\sE]*(WHE|WHO)</span></td>
+        <td class="clue clue-top"><span>[ARE](.)[SAINT]+\1V</span></td>
+        <td class="clue clue-top"><span>.{2}[ST\sEL]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(RR|FRO)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[FR\sO]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[^SAINT]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(M\s|SM)[ROSE]</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[\sUSH]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(S|US)+</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[A\sI]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^AW]A.*</span></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>[WITH]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^HEAR]+</span></td>
+      </tr>
+      <!-- row 6 -->
+      <tr>
+        <td class="clue clue-left"><span>[HEL\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.*[FIL]</span></td>
+      </tr>
+      <!-- row 7 -->
+      <tr>
+        <td class="clue clue-left"><span>.*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(VE|O|VO)+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[^VYS]+</span></td>
+        <td class="clue clue-bottom"><span>.(\sSAI).*</span></td>
+        <td class="clue clue-bottom"><span>(LE|\sT|S|OR)+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 11 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[6] Pisco Sour</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(MA|LM)</span></td>
+        <td class="clue clue-top"><span>[^MESH]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[LINE]+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[ISLE]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[LAM]+</span></td>
+        <td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[MALE]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[LAME]*</span></td>
+        <td class="clue clue-bottom"><span>[^LES]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 12 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[6] Roman Latin</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[IDEAL\s]+</span></td>
+        <td class="clue clue-top"><span>[OLD]I[PUS]</span></td>
+        <td class="clue clue-top"><span>[MNOPQR]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>.*[KNIGHT]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^GIP]+[^MITE]</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(IN|SI|D|E)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[DIMN]+[NO]</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[IMUST]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^SNAP\s\-]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>(DI|FI|L|O)+</span></td>
+        <td class="clue clue-bottom"><span>[IOU\s]+</span></td>
+        <td class="clue clue-bottom"><span>(.)\1(M|N)</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[6] Big and hot</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[NAYE]*</span></td>
+        <td class="clue clue-top"><span>(EO|N\s)</span></td>
+        <td class="clue clue-top"><span>[WRONG]*</span></td>
+        <td class="clue clue-top"><span>(K|R|I|M|\s)+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(W\s|NE|PS)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[END\sWITH]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[YOU]{2}[ARK]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.+R.*</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[YEN]+</span></td>
+        <td class="clue clue-bottom"><span>[ETPHONE\s]+</span></td>
+        <td class="clue clue-bottom"><span>[^GONE\s]+</span></td>
+        <td class="clue clue-bottom"><span>[\sANKT]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 13 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[6] Alpha World City</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(KA|LK)[MNO]</span></td>
+        <td class="clue clue-top"><span>.+(AL|P)</span></td>
+        <td class="clue clue-top"><span>[^PIM\s]+</span></td>
+        <td class="clue clue-top"><span>[LP].*[PR]</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[ALK\sU]+(P|AL|E)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[LUKE]{2}[LAKE\s]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[ABC]\s(LU|LP)]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.*[PUL]+</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(RU|MP|UR|S)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[RUMPUS]*</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[KRAMP]+</span></td>
+        <td class="clue clue-bottom"><span>U[PLAIN\s]{2}</span></td>
+        <td class="clue clue-bottom"><span>[ALURE]+</span></td>
+        <td class="clue clue-bottom"><span>[RULE\s]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[6] Home</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[HELP\s]+</span></td>
+        <td class="clue clue-top"><span>[^\sPONG]+N</span></td>
+        <td class="clue clue-top"><span>[SONG]+\s</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[^SEAP]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[\sCOPE]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[\sPIN]E[NET]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^HI\s]+</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[^ONE\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[\sHAG]+</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[END\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^SODA]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[^SLIC]+\w</span></td>
+        <td class="clue clue-bottom"><span>[OCEAN\s]+</span></td>
+        <td class="clue clue-bottom"><span>[^SPIES]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 14 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[7] Bal</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[GRAPEZ]+</span></td>
+        <td class="clue clue-top"><span>[^ION\sS]+</span></td>
+        <td class="clue clue-top"><span>(ZO|OS|OP)</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(PO|R|G|E)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[GRA]P+.*</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(Z|OO)[KINZS]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(X|Y|Z)[KIS\s]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[GIN].</span></td>
+        <td class="clue clue-bottom"><span>[SPIK\s]*</span></td>
+        <td class="clue clue-bottom"><span>[^ZYP]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 15 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[7] Tel</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>M[\DIP]*</span></td>
+        <td class="clue clue-top"><span>(\\d|\d.)[\\\/B]</span></td>
+        <td class="clue clue-top"><span>(Y$|YH|\d$)+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(Y|\d|M)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^IB][0-3]Y</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(.H|P|.P)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>^(P|Y)*(PA|\.H$)</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[\dIP\s].+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[PA\\d\d]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>(M|A|P)+</span></td>
+        <td class="clue clue-bottom"><span>[^2O13]\.\\*(A|P)?</span></td>
+        <td class="clue clue-bottom"><span>[HOW2Y]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[7] Kil</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[MENSA?]+</span></td>
+        <td class="clue clue-top"><span>(A|\?|\?P|NP)+</span></td>
+        <td class="clue clue-top"><span>[YOU?BE]+</span></td>
+        <td class="clue clue-top"><span>(O|P)\1\1</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[^APE]+.?</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[M-Q].[A-E][M-Q]</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[SNAKE]+..</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^NAKED].?(UO|DUO)</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(\!|\'|\.|\?)?P[YO!]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.+[M-W]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[^NAP\s]+.</span></td>
+        <td class="clue clue-bottom"><span>[PEN\sA?]+</span></td>
+        <td class="clue clue-bottom"><span>.+(Y|BE)</span></td>
+        <td class="clue clue-bottom"><span>[^BAT'S?]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 16 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[7] Fol</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[A5-9\/]+\d(\s|:|\.)</span></td>
+        <td class="clue clue-top"><span>[T0X\sD]+</span></td>
+        <td class="clue clue-top"><span>[BMX'S]+N?</span></td>
+        <td class="clue clue-top"><span>[PA/\sWE]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(\d+)[MEW]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[W407OM]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[\/BEDS]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.+(D|B)+.?</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(\d|\/d|P|\sS|S)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[SP1NE\s]+</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[^ZO\s\/\d]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[NA:X,S]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[0-9:A-Z\/\s]+</span></td>
+        <td class="clue clue-bottom"><span>(0D|E\s|\sX)+</span></td>
+        <td class="clue clue-bottom"><span>.+B(SN|XN|:P)+</span></td>
+        <td class="clue clue-bottom"><span>[^\sIN\/5]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 17 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[7] Lul</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[2TAIL\-D]+</span></td>
+        <td class="clue clue-top"><span>(WE|R4|RY|M)+</span></td>
+        <td class="clue clue-top"><span>[FEAL3-5S]+</span></td>
+        <td class="clue clue-top"><span>[^FA\sT1-2]+F</span></td>
+        <td class="clue clue-top"><span>[LO\s\?5-8]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>(N3|TRA|N7)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^OLD\s]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[1LOVE2?4]+.</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(\d+)[LA\s$?]+</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(A|D)M[5-8$L]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(\-P|5\$|AM|Z|L)+</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[^\s0ILAD]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(\-D|\-WE)+[^L4-9N$?]+</span></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>[B-E]+(.)\1.</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[FED$?]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[^ILYO]+</span></td>
+        <td class="clue clue-bottom"><span>.+[MURDEW]+</span></td>
+        <td class="clue clue-bottom"><span>[1ALF5$E\s]+</span></td>
+        <td class="clue clue-bottom"><span>[\dFAN$?]+</span></td>
+        <td class="clue clue-bottom"><span>.+\s.+\?</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 18 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[8] The Ghost</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[RQ\s]*(N|U|M|\s){3,}</span></td>
+        <td class="clue clue-top"><span>(N|I|E)[HOLE]{2,}A(M|N)</span></td>
+        <td class="clue clue-top"><span>[VIT]{2}[T\s]?(STU|PLO)+</span></td>
+        <td class="clue clue-top"><span>(E|\s)(A|S|K)*.U?[FR]</span></td>
+        <td class="clue clue-top"><span>(F|A|N)(\s)\1\2[RIF](K|D)+</span></td>
+        <td class="clue clue-top"><span>(G|A|\s)(DU|F|SET)+[WAE]+</span></td>
+        <td class="clue clue-top"><span>[ASK]?(LR|EO|\sN)+</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[RA](A|E)[V\s]\1[NG]+\1</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[SHI\s]+.{2}</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>(FO|UL|ED)*[DAN\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[TORM]+ST(U|\s|N|K)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>(F|N)(.)[RUNT]+\2[CL]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 6 -->
+      <tr>
+        <td class="clue clue-left"><span>\s[URM]*[ERD]{3,}</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+
+    <hr class="puzzle-divider">
+
+    <h2>[8] Hamlet and Ophelia</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(T|K)[POE]\1\1(B|E|\s)*</span></td>
+        <td class="clue clue-top"><span>[PROH]+TS+</span></td>
+        <td class="clue clue-top"><span>(BY|\s|K){3}(AH|T|HA)+</span></td>
+        <td class="clue clue-top"><span>(TEI|PNI|BNB)*</span></td>
+        <td class="clue clue-top"><span>(\sO|EO|E\s)+</span></td>
+        <td class="clue clue-top"><span>[I,T]{4}(QN|BA)*</span></td>
+        <td class="clue clue-top"><span>(.)\1\1[SUN]*\1</span></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[SALT]+O(\sB|S,|E,)+[F\s]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(OR\s|T\s|NO)*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>.(L|,|O)[,E\sB]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>(TH|IH|T)AT[SI\s]*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>(\s|I)?(T|H|F){2}E[QU\s]{3}</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+      <!-- row 6 -->
+      <tr>
+        <td class="clue clue-left"><span>[^BAKH\s]+(\sB|N\s)</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 19 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[8] The Play</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[O-S\sG-L]+</span></td>
+        <td class="clue clue-top"><span>[ANTIGE]+</span></td>
+        <td class="clue clue-top"><span>(S\s|\sS|'A)+</span></td>
+        <td class="clue clue-top"><span>[PI\sRD]+</span></td>
+        <td class="clue clue-top"><span>(TD|L|LO|O|OH)+</span></td>
+        <td class="clue clue-top"><span>[HITE'\s]+</span></td>
+        <td class="clue clue-top"><span>[MENDS]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[HEL\s]+P.+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.[SEPOLI\s]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[MI/SON]+[^OLDE]{4}</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.{3,4}(\sH|\s|IM)+</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[IN'THE\.\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[IT'\s]{4}[H.TE]+</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>.[A-G]+(R|D)+[END]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.{4}(NI|TE|N|DE)+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>(\s\s|OR|HO|ME)+</span></td>
+        <td class="clue clue-bottom"><span>[A-G]N+(GI|IG|PI)</span></td>
+        <td class="clue clue-bottom"><span>[RAM\sES']+</span></td>
+        <td class="clue clue-bottom"><span>[^AINED]+</span></td>
+        <td class="clue clue-bottom"><span>[HORTED]+</span></td>
+        <td class="clue clue-bottom"><span>[F-K]{2}[F-M]..?</span></td>
+        <td class="clue clue-bottom"><span>(S|I|MS)[MYEND]*</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 20 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[8] Laertes</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[PHAT\s!]+</span></td>
+        <td class="clue clue-top"><span>(O\s|E\s)+.+</span></td>
+        <td class="clue clue-top"><span>[ORP]+TO[^PHILA]</span></td>
+        <td class="clue clue-top"><span>[^OLDER]{3}H.+</span></td>
+        <td class="clue clue-top"><span>.[HORN\s]+[^HAS]</span></td>
+        <td class="clue clue-top"><span>[WAU\s]+</span></td>
+        <td class="clue clue-top"><span>[CASH]+[O,!]+</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[M-W\s]+[A-D]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.+[MUNCH']{3}</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>(H|E|Y)(.)(OF|ER)\2[WAS]{2}</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[FO\sH]+(OP|WA|HA)</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[HASTER'\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(R\s|TE|S)+[^RS\s]{2}(S|HH)?</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>(A|T)[YUR\s]\1H[OU\s,!]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[THO\sE]+U.?</span></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>(.).(F|O)\2(R|I|P|\s)+\1\2</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[PRO\sE]+</span></td>
+      </tr>
+      <!-- row 6 -->
+      <tr>
+        <td class="clue clue-left"><span>[M-Q]+[HELL]+.+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(P|H|EL)+[AILS!]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>(.).\1\1\s.</span></td>
+        <td class="clue clue-bottom"><span>[PHONE\s!]+(HP|PH)+</span></td>
+        <td class="clue clue-bottom"><span>(O|A)\1.+[ELA]</span></td>
+        <td class="clue clue-bottom"><span>[LOFHER\s]+</span></td>
+        <td class="clue clue-bottom"><span>[^NUT\s].[HORIS]+</span></td>
+        <td class="clue clue-bottom"><span>[U-W].+(\s|A)+</span></td>
+        <td class="clue clue-bottom"><span>[A-E]{2}(S,|O,|O!|,!)+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 21 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[8] Memento</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>[POLEA\s]{5}[^ASH]+</span></td>
+        <td class="clue clue-top"><span>.(OR|AP|IE).[FA\sT]+</span></td>
+        <td class="clue clue-top"><span>[^ELFR]+(E|OI|J)+</span></td>
+        <td class="clue clue-top"><span>[^OH,AI\s:IM!]+</span></td>
+        <td class="clue clue-top"><span>[KLIPS,CLAP\s]+</span></td>
+        <td class="clue clue-top"><span>[\sHY:!;]+.+(T|A|PE)\1</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>[^DO.HY:PER!']+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(A|E|I|O).\1[SOFT,]+.</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[ROPE\s]+[YE\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[PAST]{1}(O|U|T)+[YEAR\s]+</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[FAST\s,OR]+.*</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>O[RICE]+(S\?|K!)</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>[^FOUR,SHE]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[\s.!]+[ASH]</span></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>[LEAF\s]*[M-R]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^PLAY?KIS]+[LOVE]*</span></td>
+      </tr>
+      <!-- row 6 -->
+      <tr>
+        <td class="clue clue-left"><span>[^TRASH]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(\sI|W\s|OF)+</span></td>
+      </tr>
+      <!-- row 7 -->
+      <tr>
+        <td class="clue clue-left"><span>[NITRO,FUN]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(N|O).(I|F)\1\2.</span></td>
+      </tr>
+      <!-- row 8 -->
+      <tr>
+        <td class="clue clue-left"><span>(A|E|I)[J\s]+\1(BE|ST)</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(S\s|E\s).[EAST]+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[^IR]{2}[OWN\s]+.</span></td>
+        <td class="clue clue-bottom"><span>[LORD'.]+(PS|F\s)+</span></td>
+        <td class="clue clue-bottom"><span>[A?OH–FIRE.]+J?</span></td>
+        <td class="clue clue-bottom"><span>(SR|LF|C.)+[END]+</span></td>
+        <td class="clue clue-bottom"><span>[^YOAS]+L[\sHIS]+</span></td>
+        <td class="clue clue-bottom"><span>[^EAR;][IF:A?YOLK!].+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 22 ---</div>
+  </div>
+
+  <div class="puzzle">
+    <h2>[8] The End</h2>
+    <table>
+      <!-- top clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-top"><span>(NR\s|BE)+.+</span></td>
+        <td class="clue clue-top"><span>[^SPYC\s]+</span></td>
+        <td class="clue clue-top"><span>[^ADSP]+</span></td>
+        <td class="clue clue-top"><span>[^BLUCE]+.</span></td>
+        <td class="clue clue-top"><span>[^AYN\s]+(E|A)</span></td>
+        <td class="clue"></td>
+      </tr>
+      <!-- row 1 -->
+      <tr>
+        <td class="clue clue-left"><span>.(\sC|OW|\s)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>.{3}[COPE\s]+</span></td>
+      </tr>
+      <!-- row 2 -->
+      <tr>
+        <td class="clue clue-left"><span>[RACE]+(AS|KS)</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[RAYS]+C(KS|SK|Y)</span></td>
+      </tr>
+      <!-- row 3 -->
+      <tr>
+        <td class="clue clue-left"><span>[NOA\sE]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[\sAP]+[M-W]{2}</span></td>
+      </tr>
+      <!-- row 4 -->
+      <tr>
+        <td class="clue clue-left"><span>(BL|UF)[A\s,HE]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[A-Q]{2}[^PASH]+.</span></td>
+      </tr>
+      <!-- row 5 -->
+      <tr>
+        <td class="clue clue-left"><span>[A-G][ARTH\s.]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(IR|T\.|EA|R)+</span></td>
+      </tr>
+      <!-- row 6 -->
+      <tr>
+        <td class="clue clue-left"><span>[\sEA]+G[OD\s]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[^APE][DOG]+</span></td>
+      </tr>
+      <!-- row 7 -->
+      <tr>
+        <td class="clue clue-left"><span>(IG|\sN|H\s|H)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>\W[GINES]+.?</span></td>
+      </tr>
+      <!-- row 8 -->
+      <tr>
+        <td class="clue clue-left"><span>(SW|EA|T,\s)+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>[\sWEAT,S']+</span></td>
+      </tr>
+      <!-- row 9 -->
+      <tr>
+        <td class="clue clue-left"><span>(H|M|E)\1T[\sPYS]+</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(.?)\1(P|T\s)+</span></td>
+      </tr>
+      <!-- row 10 -->
+      <tr>
+        <td class="clue clue-left"><span>[O-Z][ICE\s]+.+[PEN]</span></td>
+        <td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td><td class="cell"></td>
+        <td class="clue clue-right"><span>(IN|R|CE|\sP)+</span></td>
+      </tr>
+      <!-- bottom clue row -->
+      <tr>
+        <td class="clue"></td>
+        <td class="clue clue-bottom"><span>[BRIN\W]{4}[TERN\s]+</span></td>
+        <td class="clue clue-bottom"><span>(LA|O|AA){2,3}.+</span></td>
+        <td class="clue clue-bottom"><span>[A-EQ-Z]{2}['\s!]E[^.!Y]+</span></td>
+        <td class="clue clue-bottom"><span>\W(KN|\s|\sK)+TO.+</span></td>
+        <td class="clue clue-bottom"><span>[^GAULE,]+D[^OL]+</span></td>
+        <td class="clue"></td>
+      </tr>
+    </table>
+    <div class="page-number">--- 23 ---</div>
+  </div>
+
+</body>
+</html>

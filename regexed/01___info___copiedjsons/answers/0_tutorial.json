@@ -1,0 +1,11 @@
+[
+  {"title": "The OR symbol", "solution": ["A"]},
+  {"title": "A Range of characters", "solution": ["B"]},
+  {"title": "Characters NOT to include", "solution": ["C"]},
+  {"title": "Zero or more", "solution": ["A", "A"]},
+  {"title": "Zero or one", "solution": ["A", "B"]},
+  {"title": "One or more", "solution": ["A", "A"]},
+  {"title": "Backreference", "solution": ["A", "A"]},
+  {"title": "Specific amount", "solution": ["A", "A"]},
+  {"title": "Space", "solution": [" "]}
+]

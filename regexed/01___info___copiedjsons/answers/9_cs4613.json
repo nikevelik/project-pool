@@ -1,0 +1,11 @@
+[
+  {"title": "Twisted Ladder", "solution": ["RUNT", "THAT", "THAT", "RUNT"]},
+  {"title": "Odd Pair",       "solution": ["HI", "KN"]},
+  {"title": "Sweet Shelter",  "solution": ["HO", "ME"]},
+  {"title": "Starling",       "solution": ["BO", "RN"]},
+  {"title": "Night Compass",  "solution": ["HORN", "HERE", "NULL", "MOON"]},
+  {"title": "Velvet Drift",   "solution": ["STAY", "SOME", "SAFE", "SOFT"]},
+  {"title": "Warm Echo",      "solution": ["STAY", "HOME", "STAY", "HOME"]},
+  {"title": "Amber Descent",  "solution": ["FULL", "NAME", "FALL", "FOOL"]},
+  {"title": "Blue Omen",      "solution": ["BULL", "NAME", "BLUE", "MOON"]}
+]

@@ -1,0 +1,221 @@
+[
+    {
+        "title": "Twisted Ladder",
+        "up_to_down": [
+            "[^NRU](NO|ON)",
+            "(D|FU|UF)+",
+            "(FO|A|R)*",
+            "(N|A)*"
+        ],
+        "left_to_right": [
+            "[RUNT]*",
+            "O.*[HAT]",
+            "(.)*DO\\1",
+            "THAT"
+        ],
+        "right_to_left": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Odd Pair",
+        "up_to_down": [
+            "[^ANI]+",
+            "[^HBK]+"
+        ],
+        "left_to_right": [
+            "[HI]+",
+            "[KN]+"
+        ],
+        "right_to_left": [
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Sweet Shelter",
+        "up_to_down": [
+            "HH|HM",
+            "OE|07"
+        ],
+        "left_to_right": [
+            "HI|HO|H*",
+            "ME|MD"
+        ],
+        "right_to_left": [
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Starling",
+        "up_to_down": [
+            "[BA]?[R]+",
+            "[^BKRN][NAH]?"
+        ],
+        "left_to_right": [
+            "[BO]?[ON]",
+            "[KR][ON]?"
+        ],
+        "right_to_left": [
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Night Compass",
+        "up_to_down": [
+            "[BH]{2}NM",
+            "[OEU]{3}O",
+            "R+LO|R+OL",
+            "NELN|WELN"
+        ],
+        "left_to_right": [
+            "[HORN]{4}",
+            "HOME|HERE",
+            "LACK|NULL",
+            "MOON|NOON"
+        ],
+        "right_to_left": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Velvet Drift",
+        "up_to_down": [
+            "[^DITAF]{2}SS",
+            "[OT]{2}[^BESF]+",
+            "A+MF[^AOS]",
+            "[^AFORM]+"
+        ],
+        "left_to_right": [
+            "[SAT]{3}Y",
+            "SOME|HERE",
+            "S[EFA]{3}",
+            "[OSF]+[AT]"
+        ],
+        "right_to_left": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Warm Echo",
+        "up_to_down": [
+            "[HNDS]*",
+            "[OT]{2}[^HEMF]+",
+            "A*M[AM]*",
+            "[^AHORM]+"
+        ],
+        "left_to_right": [
+            "[SAT]{3}Y",
+            "HOME|HERE",
+            "S*T[AY]*",
+            "[HEOM]*"
+        ],
+        "right_to_left": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Amber Descent",
+        "up_to_down": [
+            "[FN]*",
+            "[UR]?[A]+O",
+            "[AM]?LM[LOE]*",
+            "[^AGOM]+"
+        ],
+        "left_to_right": [
+            "[SAT]?FU[L]+",
+            "NA[ME]+",
+            "FA[HOME]?LL",
+            "[F]?O*[GL]"
+        ],
+        "right_to_left": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    {
+        "title": "Blue Omen",
+        "up_to_down": [
+            "B[MN]*B+M",
+            "[UR]?[AL]+O",
+            "[L]?M[LOVU]*",
+            "[^AGUMO]+"
+        ],
+        "left_to_right": [
+            "BU[L]+",
+            "NA[ME]+",
+            "BL[EU]+",
+            "[MON]+"
+        ],
+        "right_to_left": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "down_to_up": [
+            "",
+            "",
+            "",
+            ""
+        ]
+    }
+]
