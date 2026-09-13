@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Author Name">
+    <link rel="stylesheet" href="../css/app.css">
+    <title>FMI Izbiraemi</title>
+  </head>
+<body>
+   
+
+
+
+
+<form id="combined-form">
+    <h2>Filters</h2>
+
+    <div class="accordion">
+        <button class="accordion-header">Shown Specialty</button>
+        <div class="accordion-content">
+            <label>
+                <input type="checkbox" name="specialty" value="si" checked>
+                SI
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="ad">
+                AD
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="i">
+                I
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="is">
+                IS
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="kn">
+                KN
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="m">
+                M
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="pm">
+                PM
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="mi">
+                MI
+            </label>
+            <label>
+                <input type="checkbox" name="specialty" value="stat">
+                STAT
+            </label>
+        </div>
+    </div>
+
+    <div class="accordion">
+        <button class="accordion-header">Shown columns</button>
+        <div class="accordion-content">
+            <label>
+                <input type="checkbox" name="column" value="name">
+                Name
+            </label>
+            <label>
+                <input type="checkbox" name="column" value="department">
+                Department
+            </label>
+            <label>
+                <input type="checkbox" name="column" value="link" checked>
+                Link
+            </label>
+            <label>
+                <input type="checkbox" name="column" value="teacher" checked>
+                Teacher
+            </label>
+            <label>
+                <input type="checkbox" name="column" value="horarium" checked >
+                Horarium
+            </label>
+            <label>
+                <input type="checkbox" name="column" value="credits">
+                Credits
+            </label>
+        </div>
+    </div>
+
+    <div class="accordion">
+        <button class="accordion-header">Shown groups</button>
+        <div class="accordion-content">
+            <label>
+                <input checked type="checkbox" name="group" value="Др.">
+                Др.
+            </label>
+            <label>
+                <input checked type="checkbox" name="group" value="Д">
+                Д
+            </label>
+            <label>
+                <input checked type="checkbox" name="group" value="Други">
+                Други
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="КП">
+                КП
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="М">
+                М
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="M">
+                M
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ОКН">
+                ОКН
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ПМ">
+                ПМ
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ПМ / Ст">
+                ПМ / Ст
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ПМ/ Стат">
+                ПМ/ Стат
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ПМ/Стат">
+                ПМ/Стат
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ПМСтат">
+                ПМСтат
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="С">
+                С
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ЯКН">
+                ЯКН
+            </label>
+            <label>
+                <input  checked type="checkbox" name="group" value="ЯКН/ОКН">
+                ЯКН/ОКН
+            </label>
+        </div>
+    </div>
+    <button id="apply-button">Apply</button>
+</form>
+    <div id="table-container"> </div>
+    <script src = "../js/app-zimen.js"></script> 
+</body>
+</html>
