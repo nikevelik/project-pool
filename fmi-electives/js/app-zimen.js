@@ -4,7 +4,7 @@ const main = async function(){
   const specialties = Array.from(document.querySelectorAll('input[name="specialty"]:checked')).map(checkbox => checkbox.value);
   const columns = Array.from(document.querySelectorAll('input[name="column"]:not(:checked)')).map(checkbox => checkbox.value);    
   const groups = Array.from(document.querySelectorAll('input[name="group"]:checked')).map(checkbox => checkbox.value);
-  const tableHTML = await loadTableHTML('../sources/Zimen2025-2026.html');
+  const tableHTML = await loadTableHTML('../sources/Zimen2026-2027.html');
   console.log(getGroups(tableHTML))
   const data = tableHTMLtoObject(tableHTML);
   const cleaned = removeKeys(data, columns);
