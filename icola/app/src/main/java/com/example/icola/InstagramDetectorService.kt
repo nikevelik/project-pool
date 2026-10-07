@@ -23,6 +23,7 @@ class InstagramDetectorService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         notifier = TabNotifier(this).also { it.ensureChannel() }
+        OverlayService.goHome = { performGlobalAction(GLOBAL_ACTION_HOME) }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -49,6 +50,8 @@ class InstagramDetectorService : AccessibilityService() {
                         ) {
                             tracker.reset()
                             stopPolling()
+                            // Don't leave the overlay covering the launcher or another app.
+                            OverlayService.hide(this)
                         }
                     } finally {
                         @Suppress("DEPRECATION")
@@ -89,7 +92,11 @@ class InstagramDetectorService : AccessibilityService() {
     private fun evaluate() {
         val screen = currentScreen() ?: return
         Log.d(TAG, "detected=$screen")
-        tracker.onDetected(screen)?.let { notifier.notify(it) }
+        tracker.onDetected(screen)?.let {
+            notifier.notify(it)
+            // Only on entering Home/Reels, not on poll ticks, so a dismissed overlay stays gone.
+            OverlayService.show(this)
+        }
         // A new screen needs a confirming read; don't wait for another event to supply it.
         if (tracker.hasPending && rechecksLeft > 0) {
             rechecksLeft--
