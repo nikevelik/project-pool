@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Icola</string>
-    <string name="accessibility_service_description">Notifies you when you enter Instagram\'s Home or Reels screen.</string>
-    <string name="overlay_message">Instagram Blocked</string>
+    <string name="accessibility_service_description">Shows a blocking screen when you enter Instagram\'s Home or Reels screen.</string>
+    <string name="overlay_message">InstagramBlocked</string>
     <string name="overlay_close">Close</string>
 </resources>
