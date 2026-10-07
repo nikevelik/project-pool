@@ -11,18 +11,13 @@ import android.view.accessibility.AccessibilityNodeInfo
 class InstagramDetectorService : AccessibilityService() {
 
     private val tracker = ScreenTracker()
-    private lateinit var notifier: TabNotifier
     private var lastEventTime = 0L
     private val handler = Handler(Looper.getMainLooper())
     private val recheck = Runnable { evaluate() }
     private var rechecksLeft = 0
-    private val poll = Runnable { pollTick() }
-    private var polling = false
-    private var pollMisses = 0
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        notifier = TabNotifier(this).also { it.ensureChannel() }
         OverlayService.goHome = { performGlobalAction(GLOBAL_ACTION_HOME) }
     }
 
@@ -49,7 +44,6 @@ class InstagramDetectorService : AccessibilityService() {
                             InstagramPackages.leavesInstagram(activePkg, packageName)
                         ) {
                             tracker.reset()
-                            stopPolling()
                             // Don't leave the overlay covering the launcher or another app.
                             OverlayService.hide(this)
                         }
@@ -69,8 +63,6 @@ class InstagramDetectorService : AccessibilityService() {
             AccessibilityEvent.TYPE_VIEW_CLICKED -> Unit
             else -> return
         }
-
-        ensurePolling()
 
         val now = System.currentTimeMillis()
         if (now - lastEventTime < THROTTLE_MS) {
@@ -92,11 +84,8 @@ class InstagramDetectorService : AccessibilityService() {
     private fun evaluate() {
         val screen = currentScreen() ?: return
         Log.d(TAG, "detected=$screen")
-        tracker.onDetected(screen)?.let {
-            notifier.notify(it)
-            // Only on entering Home/Reels, not on poll ticks, so a dismissed overlay stays gone.
-            OverlayService.show(this)
-        }
+        // Only when entering Home/Reels, so a dismissed overlay stays gone until re-entry.
+        if (tracker.onDetected(screen) != null) OverlayService.show(this)
         // A new screen needs a confirming read; don't wait for another event to supply it.
         if (tracker.hasPending && rechecksLeft > 0) {
             rechecksLeft--
@@ -125,48 +114,13 @@ class InstagramDetectorService : AccessibilityService() {
         }
     }
 
-    // Safety net: while Instagram is in use, notify every POLL_MS if on Home or Reels, even if
-    // the same notification was shown before, in case the event-driven path missed one.
-    private fun ensurePolling() {
-        pollMisses = 0
-        if (polling) return
-        polling = true
-        handler.postDelayed(poll, POLL_MS)
-    }
-
-    private fun stopPolling() {
-        polling = false
-        handler.removeCallbacks(poll)
-    }
-
-    private fun pollTick() {
-        val screen = currentScreen()
-        if (screen == null) {
-            // Instagram may just be mid-transition; give up after a few unreadable ticks.
-            if (++pollMisses >= MAX_POLL_MISSES) {
-                stopPolling()
-                return
-            }
-        } else {
-            pollMisses = 0
-            when (screen) {
-                Screen.HOME -> notifier.notify(NotifyAction.HOME)
-                Screen.REELS -> notifier.notify(NotifyAction.REELS)
-                Screen.OTHER -> Unit
-            }
-        }
-        handler.postDelayed(poll, POLL_MS)
-    }
-
     override fun onInterrupt() {
         handler.removeCallbacks(recheck)
-        stopPolling()
         tracker.reset()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         handler.removeCallbacks(recheck)
-        stopPolling()
         tracker.reset()
         return super.onUnbind(intent)
     }
@@ -197,8 +151,6 @@ class InstagramDetectorService : AccessibilityService() {
         const val THROTTLE_MS = 300L
         const val RECHECK_MS = 400L
         const val MAX_RECHECKS = 3
-        const val POLL_MS = 5_000L
-        const val MAX_POLL_MISSES = 3
         const val MAX_DEPTH = 25
     }
 }
